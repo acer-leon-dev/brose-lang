@@ -1,0 +1,22 @@
+keywords:
+    # input value of a script
+    - x
+    # return value of a script
+    - y
+operations:
+    binary:
+        - ass:  a = b
+        - add:  a + b
+        - sub:  a - b
+        - mul:  a * b
+        - div:  a / b
+        - exp:  a ^ b
+        - root: nthroot(a, b)
+        - log:  log(a, b)
+        - mod:  a \\ b
+    unary:
+        - par:  (a)
+        - abs:  \|a\|
+        - fac:  a!
+features:
+    - variables
