@@ -5,18 +5,20 @@ keywords:
     - y
 operations:
     binary:
-        - ass:  a = b
-        - add:  a + b
-        - sub:  a - b
-        - mul:  a * b
-        - div:  a / b
-        - exp:  a ^ b
-        - root: nthroot(a, b)
-        - log:  log(a, b)
-        - mod:  a \\ b
+        - assignment:  a = b
+        - addition:  a + b
+        - subtraction:  a - b
+        - multiplication:  a * b
+        - division:  a / b
+        - exponentiation:  a ^ b
+        - rooting: nthroot(a, b)
+        - logarithm:  log(a, b)
+        - modulus:  a \\ b
     unary:
-        - par:  (a)
+        - negation: -a
         - abs:  \|a\|
         - fac:  a!
+    other:
+        - parenthesizing:  (a)
 features:
     - variables
