@@ -1,0 +1,12 @@
+-
+  aliases: [help]
+  description: this
+-
+  aliases: [load-func]
+  description: load a function from a script
+-
+  aliases: [func]
+  description: create and load a new, one-lined function
+-
+  aliases: [quit, exit, q]
+  description: exit
