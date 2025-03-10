@@ -10,7 +10,7 @@ double Script::invoke(double x)
 }
 
 
-Script compileSource(std::string_view source)
+Script interpretSource(std::string_view source)
 {
 
 }

@@ -1,11 +1,6 @@
-#ifndef CDE03807_3E85_45CD_9158_736D7EDC63F0
-#define CDE03807_3E85_45CD_9158_736D7EDC63F0
-
 #include "script.hpp"
 
-Script compile()
+Script interpretSource()
 {
     
 }
-
-#endif /* CDE03807_3E85_45CD_9158_736D7EDC63F0 */
