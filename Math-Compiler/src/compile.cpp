@@ -1,6 +1,6 @@
-#include "script.hpp"
+#include "mathcompiler/Script.hpp"
 
-Script interpretSource()
+Script compileSource(std::string source)
 {
-    
+    return Script();
 }

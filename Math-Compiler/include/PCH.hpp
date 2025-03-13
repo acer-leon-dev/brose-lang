@@ -4,3 +4,4 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <cctype>

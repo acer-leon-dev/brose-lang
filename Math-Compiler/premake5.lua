@@ -1,15 +1,16 @@
 project "Math-Compiler"
-    kind "StaticLib"
+    kind "ConsoleApp"
     language "C++"
     cppdialect "C++23"
-    targetdir "bin/%{cfg.buildcfg}"
-    objdir "bin-int/%{cfg.buildcfg}"
+    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("../bin/obj/" .. outputdir .. "/%{prj.name}")
 
     pchheader "PCH.hpp"
     pchsource "PCH.cpp"
 
     includedirs {
-        "include"
+        "include",
+        "src"
     }
 
     files { 

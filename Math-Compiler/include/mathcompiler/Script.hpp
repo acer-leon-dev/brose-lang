@@ -1,5 +1,6 @@
 #pragma once
-#include "PCH.hpp"
+
+#include "../PCH.hpp"
 
 struct Script
 {
@@ -10,4 +11,4 @@ public:
     double invoke(double x);
 };
 
-Script compileSource(std::string_view source);
+Script compileSource(std::string source);
