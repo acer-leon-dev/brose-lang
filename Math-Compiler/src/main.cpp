@@ -1,7 +1,4 @@
-#include <fstream>
-#include <vector>
-#include <filesystem>
-#include <iostream>
+#include "mathcompiler/Mathcompiler.hpp"
 
 std::string script_1 = 
 R"(a = 2^3 - floor(3.50)
@@ -35,10 +32,15 @@ std::string readFile(std::filesystem::path path)
 int main(int argc, char ** argv)
 {
     // std::string src0 = readFile(argv[1]);
-    std::string src1 = script_1;
-    std::string src2 = script_2;
-    std::string src3 = script_3;
-    std::cout << "EXAMPLE1.math\n```\n" << src1 << "\n```\n\n";
-    std::cout << "EXAMPLE2.math\n```\n" << src2 << "\n```\n\n";
-    std::cout << "EXAMPLE3.math\n```\n" << src3 << "\n```\n\n";
+    std::string src = script_1;
+	std::cout << "EXAMPLE1.math\n```\n" << src << "\n```\n\n";
+    auto tokens = tokenize(src);
+    for (auto tok : tokens) {
+        if (tok.value == "\n") {
+            std::cout << "\\n" << '\n';
+        } 
+        else {
+            std::cout << tok.value << " " << (int)tok.type << "\n";
+        }
+    }
 }
