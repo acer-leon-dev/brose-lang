@@ -67,6 +67,8 @@ TokenType getOperatorType(char op)
     switch (op) {
         default:
             throw;
+        case '\n': 
+            return NEWLINE;
         case '(': 
             return OPEN_PAREN;
         case ')': 
@@ -83,13 +85,13 @@ TokenType getOperatorType(char op)
             return DIVIDE;
         case '^': 
             return EXPONENT;
-        case '\n': 
-            return NEWLINE;
+        case '|': 
+            return ABS;
     }
 }
 
 // gets the number immediately following `pos`
-std::string getNumber_(const std::string& src, std::size_t& pos)
+std::string getNumber(const std::string& src, std::size_t& pos)
 {
     std::string numstr;
     while (mctype::isDigitFloat(src[pos + 1])) {
@@ -99,7 +101,7 @@ std::string getNumber_(const std::string& src, std::size_t& pos)
     return numstr;
 }
 
-Token getToken_(const std::string& src, std::size_t& pos)
+Token getToken(const std::string& src, std::size_t& pos)
 {
     using enum TokenType;
     
@@ -135,7 +137,7 @@ Token getToken_(const std::string& src, std::size_t& pos)
         else if (iskeyword::isLog(tokstr)) 
         {
             toktype = LOG;
-            tokstr.append(getNumber_(src, pos));
+            tokstr.append(getNumber(src, pos));
         }
         else 
         {
@@ -150,7 +152,7 @@ Token getToken_(const std::string& src, std::size_t& pos)
     {
         toktype = NUMBER;
         tokstr.push_back(lastch);
-        tokstr.append(getNumber_(src, pos));
+        tokstr.append(getNumber(src, pos));
     }
 
     // Process comments
@@ -181,7 +183,7 @@ std::vector<Token> tokenizeSource(const std::string& src)
     std::vector<Token> tokens_list;
     for (std::size_t i = 0; i < src.size(); i++)
     {
-        Token tok = getToken_(src, i);
+        Token tok = getToken(src, i);
         if (!tok.value.empty()) {
             tokens_list.push_back(tok);
         }

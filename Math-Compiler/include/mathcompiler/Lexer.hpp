@@ -12,8 +12,7 @@ enum class TokenType : int
     
     OPEN_PAREN,
     CLOSE_PAREN,
-    OPEN_ABS,
-    CLOSE_ABS,
+    ABS,
 
     EQUAL,
     PLUS,
@@ -21,6 +20,8 @@ enum class TokenType : int
     MULTIPLY,
     DIVIDE,
     EXPONENT,
+
+    FACTORIAL,
     
     MOD,
     GENERIC_FUNC,

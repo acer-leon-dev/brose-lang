@@ -26,8 +26,7 @@ std::string tokenTypeToString(TokenType t)
         case NUMBER: return "NUMBER";
         case OPEN_PAREN: return "OPEN_PAREN";
         case CLOSE_PAREN: return "CLOSE_PAREN";
-        case OPEN_ABS: return "OPEN_ABS";
-        case CLOSE_ABS: return "CLOSE_ABS";
+        case ABS: return "ABS";
         case EQUAL: return "EQUAL";
         case PLUS: return "PLUS";
         case MINUS: return "MINUS";
