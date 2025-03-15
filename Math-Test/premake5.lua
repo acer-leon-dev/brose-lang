@@ -2,11 +2,11 @@ project "Math-Test"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++23"
-    targetdir "bin/%{cfg.buildcfg}"
-    objdir "bin-int/%{cfg.buildcfg}"
+    targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("../bin/obj/" .. outputdir .. "/%{prj.name}")
     
     includedirs {
-        "{wks.location}/Math-Compiler/include"
+        "%{wks.location}/Math-Compiler/include"
     }
 
     files {

@@ -3,25 +3,28 @@
 
 enum class TokenType : int
 {
-    ENDOFFILE = 0,
+    NOT_A_TOKEN = -1,
 
-    IDENTIFIER,
+    NEWLINE,
+    
+    VARIABLE,
     NUMBER,
-
+    
     OPEN_PAREN,
     CLOSE_PAREN,
-    NEWLINE,
+    OPEN_ABS,
+    CLOSE_ABS,
 
     EQUAL,
     PLUS,
-    DASH,
-    STAR,
-    SLASH,
-    CARET,
+    MINUS,
+    MULTIPLY,
+    DIVIDE,
+    EXPONENT,
     
     MOD,
-    LOG,
-    GENERIC_FUNC
+    GENERIC_FUNC,
+    LOG
 };
 
 struct Token
@@ -30,5 +33,4 @@ struct Token
     std::string value;
 };
 
-std::size_t getToken(const std::string& src, std::size_t pos, Token& dest);
-std::vector<Token> tokenize(const std::string& src);
+std::vector<Token> tokenizeSource(const std::string& src);

@@ -5,17 +5,19 @@ namespace
 
 struct mctype
 {
-    static bool isspace(char c) 
+    mctype() = delete;
+
+    static bool isSpace(char c) 
     {
         return c == ' ' || c == '\t' || c == '\v' || c == '\f' || c == '\r';
     }
 
-    static bool isfloatdigit(char c)
+    static bool isDigitFloat(char c)
     {
         return std::isdigit(c) || c == '.';
     }
 
-    static bool isalnumfloat(char c)
+    static bool isAlnumFloat(char c)
     {
         return std::isalnum(c) || c == '.';
     }
@@ -24,7 +26,10 @@ struct mctype
 
 struct iskeyword
 {
-    static bool islog(std::string tok)
+    iskeyword() = delete;
+
+    // Verifies if `tok` is a logarithmic function
+    static bool isLog(const std::string& tok)
     {
         // return if natural log
         if (tok == "ln") {
@@ -34,104 +39,153 @@ struct iskeyword
         if (!tok.starts_with("log")) {
             return false;
         }
-
-        // verify base
-        for (int i = 4; i < tok.length(); i++) {
-            if (!mctype::isfloatdigit(tok[i])) {
-                    return false;
-            }
-        }
     
         return true;
     }
 
+    // Verifies if `tok` is a generic math function (has a name and one paremater)
+    static bool isGenericFunc(const std::string& tok)
+    {
+        static std::array<std::string, 5> functions { "sin", "cos", "tan", "floor", "ceil" };
+
+        for (std::string funcstr : functions)
+        {
+            if (tok == funcstr) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }; // struct iskeyword
 
-std::size_t getToken(const std::string& src, std::size_t pos, Token& dest)
+TokenType getOperatorType(char op)
 {
     using enum TokenType;
-    std::size_t start = pos;
+
+    switch (op) {
+        default:
+            throw;
+        case '(': 
+            return OPEN_PAREN;
+        case ')': 
+            return CLOSE_PAREN;
+        case '=': 
+            return EQUAL;
+        case '+': 
+            return PLUS;
+        case '-': 
+            return MINUS;
+        case '*': 
+            return MULTIPLY;
+        case '/': 
+            return DIVIDE;
+        case '^': 
+            return EXPONENT;
+        case '\n': 
+            return NEWLINE;
+    }
+}
+
+// gets the number immediately following `pos`
+std::string getNumber_(const std::string& src, std::size_t& pos)
+{
+    std::string numstr;
+    while (mctype::isDigitFloat(src[pos + 1])) {
+        numstr.push_back(src[++pos]);
+    }
+
+    return numstr;
+}
+
+Token getToken_(const std::string& src, std::size_t& pos)
+{
+    using enum TokenType;
     
-    char lastch = src[start];
+    char lastch = src[pos];
     
     // skip whitespace
-    while (mctype::isspace(lastch)) {
+    while (mctype::isSpace(lastch)) {
         lastch = src[++pos];
     }
 
-    std::string tok;
-    TokenType t;
+    TokenType toktype;
+    std::string tokstr;
 
     // Process identifiers and keywords
     if (std::isalpha(lastch))
     {
-        tok.push_back(lastch);
-        for (lastch = src[++pos]; std::isalnum(lastch); lastch = src[++pos]) {
-            tok.push_back(lastch);
+        std::size_t varpos = pos;
+        
+        tokstr.push_back(lastch);
+        while (std::isalnum(src[pos + 1])) {
+            lastch = src[++pos];
+            tokstr.push_back(lastch);
         }
-
-        if (tok == "mod") {
-            t = MOD;
-        } else if (tok == "floor") {
-            t = GENERIC_FUNC;
-        } else if (tok == "ceil") {
-            t = GENERIC_FUNC;
-        } else if (iskeyword::islog(tok)) {
-            t = LOG;
-        } else {
-            t = IDENTIFIER;
-        }
-
-        // Match operators
-        if (tok.length() == 1)
+        
+        if (tokstr == "mod") 
         {
-            switch (tok[0]) {
-                case '+': t = 0; break;
-                case '-': t = 0; break;
-                case '*': t = 0; break;
-                case '/': t = 0; break;
-                case '^': t = 0; break;
-            }
+            toktype = MOD;
+        }
+        else if (iskeyword::isGenericFunc(tokstr)) 
+        {
+            toktype = GENERIC_FUNC;
+        }
+        else if (iskeyword::isLog(tokstr)) 
+        {
+            toktype = LOG;
+            tokstr.append(getNumber_(src, pos));
+        }
+        else 
+        {
+            toktype = VARIABLE;
+            tokstr = tokstr[0];
+            pos = varpos;
         }
     }
 
     // Process numbers
-    if (mctype::isfloatdigit(lastch))
+    else if (mctype::isDigitFloat(lastch))
     {
-        t = NUMBER;
-        do {
-            tok.push_back(lastch);
-            lastch = src[++pos];
-        } while (mctype::isfloatdigit(lastch));
+        toktype = NUMBER;
+        tokstr.push_back(lastch);
+        tokstr.append(getNumber_(src, pos));
     }
 
     // Process comments
-    if (lastch == '/')
+    else if (src.substr(pos, 2) == "//")
     {
-        lastch = src[++pos];
-        if (lastch == '/')
-        {
-            do {
-                lastch = src[++pos];
-            } while (pos < src.length() && lastch != '\n' && lastch != '\r');
+        toktype = NOT_A_TOKEN; 
+        
+        pos += 2;
+        lastch = src[pos];
+        while (pos < src.length() && lastch != '\n' && lastch != '\r') {
+            lastch = src[++pos];
         }
     }
     
-    dest = { t, tok };
-    return pos - start;
+    // Match operators
+    else {
+        tokstr.push_back(lastch);
+        toktype = getOperatorType(lastch);
+    }
+
+    return { toktype, tokstr };
 } // std::size_t getToken
 
 }; // [anonymous] namespace
 
-std::vector<Token> tokenize(const std::string& src)
+std::vector<Token> tokenizeSource(const std::string& src)
 {
     std::vector<Token> tokens_list;
     for (std::size_t i = 0; i < src.size(); i++)
     {
-        Token tok;
-        i += getToken(src, i, tok);
-        tokens_list.push_back(tok);
+        Token tok = getToken_(src, i);
+        if (!tok.value.empty()) {
+            tokens_list.push_back(tok);
+        }
     }
-
+    
     return tokens_list;
 } // std::vector<Token> tokenize

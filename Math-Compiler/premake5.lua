@@ -1,5 +1,5 @@
 project "Math-Compiler"
-    kind "ConsoleApp"
+    kind "StaticLib"
     language "C++"
     cppdialect "C++23"
     targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
