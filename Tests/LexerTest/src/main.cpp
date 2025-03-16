@@ -117,7 +117,6 @@ int eval(const std::string& src, std::vector<Token>& dest) {
         tokens = tokenizeSource(src);
     }
     catch (std::logic_error e) {
-        std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
 

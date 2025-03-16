@@ -112,6 +112,10 @@ Token getToken(const std::string& src, std::size_t& pos)
         lastch = src[++pos];
     }
 
+    if  (pos >= src.length()) {
+        return { NOT_A_TOKEN, "" };
+    }
+
     TokenType toktype;
     std::string tokstr;
 
