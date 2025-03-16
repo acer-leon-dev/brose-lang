@@ -66,7 +66,7 @@ TokenType getOperatorType(char op)
 
     switch (op) {
         default:
-            throw;
+            throw std::logic_error(std::format("\'{}\' is not a valid operator", op));
         case '\n': 
             return NEWLINE;
         case '(': 
