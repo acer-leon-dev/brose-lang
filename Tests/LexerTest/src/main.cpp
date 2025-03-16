@@ -174,7 +174,7 @@ int main(int argc, char** argv)
     }
 
     if (argc > 2 || *std::find(args.begin(), args.end(), "--help") == "--help") {
-        std::cerr << "Usage: mathlexertest (for REPL)\n    OR\n       mathlexertest <source_file>\n";
+        std::cerr << "Usage: mathlexertest [--help] [<source_file>]\n";
         return EXIT_SUCCESS;
     }
 
