@@ -1,5 +1,5 @@
-#include "mathcompiler/Script.hpp"
-#include "mathcompiler/Lexer.hpp"
+#include "Brose/Script.hpp"
+#include "Brose/Lexer.hpp"
 
 Script compileSource(std::string source)
 {
