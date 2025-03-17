@@ -1,197 +1,179 @@
 #include "mathcompiler/Lexer.hpp"
+#include "Extendedctype.hpp"
+#include "regex.hpp"
+
+Token::Token()
+:   type { TokenType::INVALID_TOKEN }
+{
+
+}
+
+Token::Token(TokenType type, const std::string& value)
+:   type { type },
+    value { value }
+{
+
+}
+
+Token::operator bool()
+{
+    return type != TokenType::INVALID_TOKEN && !value.empty();
+}
 
 namespace
 {
 
-struct mctype
+TokenType get_keyword_type(const std::string& token)
 {
-    mctype() = delete;
+    using KeywordTokenMap = std::unordered_map<std::string, TokenType>; 
+    static const KeywordTokenMap keywords { 
+        { "mod", TokenType::MOD } 
+    };
 
-    static bool isSpace(char c) 
-    {
-        return c == ' ' || c == '\t' || c == '\v' || c == '\f' || c == '\r';
-    }
-
-    static bool isDigitFloat(char c)
-    {
-        return std::isdigit(c) || c == '.';
-    }
-
-    static bool isAlnumFloat(char c)
-    {
-        return std::isalnum(c) || c == '.';
-    }
-    
-}; // struct mctype
-
-struct iskeyword
-{
-    iskeyword() = delete;
-
-    // Verifies if `tok` is a logarithmic function
-    static bool isLog(const std::string& tok)
-    {
-        // return if natural log
-        if (tok == "ln") {
-            return true;
-        }
-        
-        if (!tok.starts_with("log")) {
-            return false;
-        }
-    
-        return true;
-    }
-
-    // Verifies if `tok` is a generic math function (has a name and one paremater)
-    static bool isGenericFunc(const std::string& tok)
-    {
-        static std::array<std::string, 5> functions { "sin", "cos", "tan", "floor", "ceil" };
-
-        for (std::string funcstr : functions)
-        {
-            if (tok == funcstr) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-}; // struct iskeyword
-
-TokenType getOperatorType(char op)
-{
-    using enum TokenType;
-
-    switch (op) {
-        default:
-            throw std::logic_error(std::format("\'{}\' is not a valid operator", op));
-        case '\n': 
-            return NEWLINE;
-        case '(': 
-            return OPEN_PAREN;
-        case ')': 
-            return CLOSE_PAREN;
-        case '=': 
-            return EQUAL;
-        case '+': 
-            return PLUS;
-        case '-': 
-            return MINUS;
-        case '*': 
-            return MULTIPLY;
-        case '/': 
-            return DIVIDE;
-        case '^': 
-            return EXPONENT;
-        case '|': 
-            return ABS;
-    }
+    KeywordTokenMap::const_iterator res = keywords.find(token);
+    return (res == keywords.end()) ? TokenType::INVALID_TOKEN : res->second;
 }
 
-// gets the number immediately following `pos`
-std::string getNumber(const std::string& src, std::size_t& pos)
+TokenType get_operator_type(char op)
 {
-    std::string numstr;
-    while (mctype::isDigitFloat(src[pos + 1])) {
-        numstr.push_back(src[++pos]);
-    }
+    using OperatorTokenMap = std::unordered_map<char, TokenType>;
+    static const OperatorTokenMap operators {
+        { '\n', TokenType::ENDOFLINE },
+        { '(',  TokenType::OPEN_PAREN },
+        { ')',  TokenType::CLOSE_PAREN },
+        { '=',  TokenType::EQUAL },
+        { '+',  TokenType::PLUS },
+        { '-',  TokenType::MINUS },
+        { '*',  TokenType::MULTIPLY },
+        { '/',  TokenType::DIVIDE },
+        { '^',  TokenType::EXPONENT },
+        { '|',  TokenType::ABS }
+    };
 
-    return numstr;
+    OperatorTokenMap::const_iterator res = operators.find(op);
+    return (res == operators.end()) ? TokenType::INVALID_TOKEN : res->second;
 }
 
-Token getToken(const std::string& src, std::size_t& pos)
+Token match_variable(const std::string& src, std::size_t pos = 0, std::size_t n = std::string::npos)
+{ 
+    std::string match = regex::match_start(R"([[:alpha:]])", src, pos, n);
+    if (!match.empty()) {
+        return { TokenType::VARIABLE, match };
+    }
+
+    return {};
+}
+
+Token match_token_keyword(const std::string& src, std::size_t pos = 0, std::size_t n = std::string::npos)
+{ 
+    static const std::array<std::string, 1> keywords { "mod" };
+    static const std::string regex = 
+        "\\b(" + 
+        regex::join_regex_or(keywords.cbegin(), keywords.cend())
+        + ")\\b";
+    std::string match = regex::match_start(regex, src, pos, n);
+    return { get_keyword_type(match), match };
+}
+
+Token match_token_number(const std::string& src, std::size_t pos = 0, std::size_t n = std::string::npos)
+{ 
+    std::string match = regex::match_start(R"(\d*\.?\d+|\d+\.?\d*)", src, pos, n);
+    if (!match.empty()) {
+        return { TokenType::NUMBER, match };
+    }
+
+    return {};
+}
+
+Token match_token_logarithm(const std::string& src, std::size_t pos = 0, std::size_t n = std::string::npos)
 {
-    using enum TokenType;
-    
+    std::string match = regex::match_start(R"(\b(ln|(log((\d*)(\.?)(\d*))))\b)", src, pos, n);
+    if (!match.empty()) {
+        return { TokenType::LOGARITHM_FUNCTION, match };
+    }
+
+    return {};
+}
+
+Token match_token_genericfunction(const std::string& src, std::size_t pos = 0, std::size_t n = std::string::npos)
+{
+    static const std::array<std::string, 5> list { "sin", "cos", "tan", "floor", "ceil" };
+    static const std::string regex = regex::join_regex_or(list.cbegin(), list.cend());
+    std::string match = regex::match_start(regex, src, pos, n);
+    if (!match.empty()) {
+        return { TokenType::GENERIC_FUNCTION, match };
+    }
+
+    return {};
+}
+
+Token match_token_operator(const std::string& src, std::size_t pos = 0, std::size_t n = std::string::npos)
+{ 
+    static const std::string regex = R"(\n|\(|\)|=|\+|\-|\*|\/|\^|\|)";
+    std::string match = regex::match_start(regex, src, pos, n);
+    return { get_operator_type(match[0]), match };
+}
+
+Token get_next_token(const std::string& src, std::size_t* p_pos)
+{
+    std::size_t& pos = *p_pos;
     char lastch = src[pos];
     
-    // skip whitespace
-    while (mctype::isSpace(lastch)) {
-        lastch = src[++pos];
+    // Skip leading whitespace
+    while (isspacenn(lastch)) {
+        pos++;
+        lastch = src[pos];
     }
+    
+    Token token;
 
+    // Check if at end of source
     if  (pos >= src.length()) {
-        return { NOT_A_TOKEN, "" };
+        return token;
     }
 
-    TokenType toktype;
-    std::string tokstr;
-
-    // Process identifiers and keywords
+    // 1. Keywords, Keyworded Functions, Variables
+    // 2. Numbers
+    // 3. Single-line comments
+    // 4. Operators
     if (std::isalpha(lastch))
     {
-        std::size_t varpos = pos;
-        
-        tokstr.push_back(lastch);
-        while (std::isalnum(src[pos + 1])) {
-            lastch = src[++pos];
-            tokstr.push_back(lastch);
-        }
-        
-        if (tokstr == "mod") 
-        {
-            toktype = MOD;
-        }
-        else if (iskeyword::isGenericFunc(tokstr)) 
-        {
-            toktype = GENERIC_FUNC;
-        }
-        else if (iskeyword::isLog(tokstr)) 
-        {
-            toktype = LOG;
-            tokstr.append(getNumber(src, pos));
-        }
-        else 
-        {
-            toktype = VARIABLE;
-            tokstr = tokstr[0];
-            pos = varpos;
-        }
+        if      (token = match_token_keyword(src, pos))         {}
+        else if (token = match_token_genericfunction(src, pos)) {}
+        else if (token = match_token_logarithm(src, pos))       {}
+        else if (token = match_variable(src, pos))              {}
     }
-
-    // Process numbers
-    else if (mctype::isDigitFloat(lastch))
-    {
-        toktype = NUMBER;
-        tokstr.push_back(lastch);
-        tokstr.append(getNumber(src, pos));
+    else if (isdigitf(lastch)) {
+        token = match_token_number(src, pos);
     }
-
-    // Process comments
-    else if (src.substr(pos, 2) == "//")
+    else if (src.substr(pos, 2) == "//") {   
+        token.value = regex::match_start(R"(\/\/[^\n\r]*)", src, pos);
+        pos++;
+    }
+    else
     {
-        toktype = NOT_A_TOKEN; 
-        
-        pos += 2;
-        lastch = src[pos];
-        while (pos < src.length() && lastch != '\n' && lastch != '\r') {
-            lastch = src[++pos];
+        token = match_token_operator(src, pos);
+        if (!token) {
+            throw std::logic_error(std::format("\'{}\' is not a valid operator", lastch));
         }
     }
     
-    // Match operators
-    else {
-        tokstr.push_back(lastch);
-        toktype = getOperatorType(lastch);
-    }
+    pos += token.value.length() - 1;
+    return token;
+} // getToken
 
-    return { toktype, tokstr };
-} // std::size_t getToken
-
-}; // [anonymous] namespace
+}; // {anonymous} namespace
 
 std::vector<Token> tokenizeSource(const std::string& src)
 {
     std::vector<Token> tokens_list;
     for (std::size_t i = 0; i < src.size(); i++)
     {
-        Token tok = getToken(src, i);
-        if (!tok.value.empty()) {
+        Token tok = get_next_token(src, &i);
+        if (tok) {
             tokens_list.push_back(tok);
         }
     }
     
     return tokens_list;
-} // std::vector<Token> tokenize
+} // tokenizeSource

@@ -3,9 +3,9 @@
 
 enum class TokenType : int
 {
-    NOT_A_TOKEN = -1,
+    INVALID_TOKEN = -1,
 
-    NEWLINE,
+    ENDOFLINE,
     
     VARIABLE,
     NUMBER,
@@ -24,14 +24,18 @@ enum class TokenType : int
     FACTORIAL,
     
     MOD,
-    GENERIC_FUNC,
-    LOG
+    GENERIC_FUNCTION,
+    LOGARITHM_FUNCTION
 };
 
 struct Token
 {
     TokenType type;
     std::string value;
+
+    Token();
+    Token(TokenType type, const std::string& value);
+    operator bool();
 };
 
 std::vector<Token> tokenizeSource(const std::string& src);

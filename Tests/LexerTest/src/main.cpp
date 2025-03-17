@@ -8,8 +8,8 @@ std::string tokenTypeToString(TokenType t)
     using enum TokenType;
     
     switch (t) {
-        case NOT_A_TOKEN: return "NOT_A_TOKEN";
-        case NEWLINE: return "NEWLINE";
+        case INVALID_TOKEN: return "NOT_A_TOKEN";
+        case ENDOFLINE: return "ENDOFLINE";
         case VARIABLE: return "VARIABLE";
         case NUMBER: return "NUMBER";
         case OPEN_PAREN: return "OPEN_PAREN";
@@ -22,8 +22,8 @@ std::string tokenTypeToString(TokenType t)
         case DIVIDE: return "DIVIDE";
         case EXPONENT: return "EXPONENT";
         case MOD: return "MOD";
-        case GENERIC_FUNC: return "GENERIC_FUNC";
-        case LOG: return "LOG";
+        case GENERIC_FUNCTION: return "GENERIC_FUNC";
+        case LOGARITHM_FUNCTION: return "LOG";
     }   
 
     return "";
@@ -122,7 +122,7 @@ int eval(const std::string& src, std::vector<Token>& dest) {
 
     for (const Token& t : tokens)
     {
-        if (t.type == TokenType::NOT_A_TOKEN) {
+        if (t.type == TokenType::INVALID_TOKEN) {
             return 1;
         }
     }
@@ -171,10 +171,10 @@ int main(int argc, char** argv)
     args.reserve(argc); 
     for (int i = 0; i < argc; i++) {
         args.emplace_back(argv[i]);
-    }
+    }   
 
     if (argc > 2 || *std::find(args.begin(), args.end(), "--help") == "--help") {
-        std::cerr << "Usage: mathlexertest [--help] [<source_file>]\n";
+        std::cerr << "Usage: " << std::filesystem::path(args[0]).stem().string() << " [--help] [<source_file>]\n";
         return EXIT_SUCCESS;
     }
 

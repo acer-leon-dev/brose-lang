@@ -8,56 +8,57 @@ d = c mod 4 - 2
 y = d ^ ( 1/3 ) * b
 ```
 ```
-a    VARIABLE
-=    EQUAL
-2    NUMBER
-^    EXPONENT
-3    NUMBER
--    MINUS
-floor    GENERIC_FUNC
-(    OPEN_PAREN
-3.50    NUMBER
-)    CLOSE_PAREN
-\n    NEWLINE
-b    VARIABLE
-=    EQUAL
-0.333    NUMBER
-*    MULTIPLY
-a    VARIABLE
-(    OPEN_PAREN
-5    NUMBER
--    MINUS
-1.2    NUMBER
-)    CLOSE_PAREN
-\n    NEWLINE
-c    VARIABLE
-=    EQUAL
-4    NUMBER
-/    DIVIDE
-3    NUMBER
-+    PLUS
-.5    NUMBER
-x    VARIABLE
-\n    NEWLINE
-d    VARIABLE
-=    EQUAL
-c    VARIABLE
-mod    MOD
-4    NUMBER
--    MINUS
-2    NUMBER
-\n    NEWLINE
-y    VARIABLE
-=    EQUAL
-d    VARIABLE
-^    EXPONENT
-(    OPEN_PAREN
-1    NUMBER
-/    DIVIDE
-3    NUMBER
-)    CLOSE_PAREN
-*    MULTIPLY
-b    VARIABLE
+Tokens:
+  a      VARIABLE
+  =      EQUAL
+  2      NUMBER
+  ^      EXPONENT
+  3      NUMBER
+  -      MINUS
+  floor  GENERIC_FUNC
+  (      OPEN_PAREN
+  3.50   NUMBER
+  )      CLOSE_PAREN
+  \n     ENDOFLINE
+  b      VARIABLE
+  =      EQUAL
+  0.333  NUMBER
+  *      MULTIPLY
+  a      VARIABLE
+  (      OPEN_PAREN
+  5      NUMBER
+  -      MINUS
+  1.2    NUMBER
+  )      CLOSE_PAREN
+  \n     ENDOFLINE
+  c      VARIABLE
+  =      EQUAL
+  4      NUMBER
+  /      DIVIDE
+  3      NUMBER
+  +      PLUS
+  .5     NUMBER
+  x      VARIABLE
+  \n     ENDOFLINE
+  d      VARIABLE
+  =      EQUAL
+  c      VARIABLE
+  mod    MOD
+  4      NUMBER
+  -      MINUS
+  2      NUMBER
+  \n     ENDOFLINE
+  y      VARIABLE
+  =      EQUAL
+  d      VARIABLE
+  ^      EXPONENT
+  (      OPEN_PAREN
+  1      NUMBER
+  /      DIVIDE
+  3      NUMBER
+  )      CLOSE_PAREN
+  *      MULTIPLY
+  b      VARIABLE
 ```
 
 ## Example 2
@@ -70,44 +71,45 @@ c = 54.23/11.96
 y = m + -x / 10 * c
 ```
 ```
-f    VARIABLE
-=    EQUAL
-log10.254    LOG
-(    OPEN_PAREN
-x    VARIABLE
-^    EXPONENT
-2    NUMBER
-)    CLOSE_PAREN
-\n    NEWLINE
-p    VARIABLE
-=    EQUAL
-(    OPEN_PAREN
-3.14159    NUMBER
-)    CLOSE_PAREN
-^    EXPONENT
-2    NUMBER
-\n    NEWLINE
-m    VARIABLE
-=    EQUAL
-f    VARIABLE
-p    VARIABLE
-\n    NEWLINE
-c    VARIABLE
-=    EQUAL
-54.23    NUMBER
-/    DIVIDE
-11.96    NUMBER
-\n    NEWLINE
-y    VARIABLE
-=    EQUAL
-m    VARIABLE
-+    PLUS
--    MINUS
-x    VARIABLE
-/    DIVIDE
-10    NUMBER
-*    MULTIPLY
-c    VARIABLE
+Tokens:
+  f      VARIABLE
+  =      EQUAL
+  log10  LOG
+  (      OPEN_PAREN
+  x      VARIABLE
+  ^      EXPONENT
+  2      NUMBER
+  )      CLOSE_PAREN
+  \n     ENDOFLINE
+  p      VARIABLE
+  =      EQUAL
+  (      OPEN_PAREN
+  3.14159        NUMBER
+  )      CLOSE_PAREN
+  ^      EXPONENT
+  2      NUMBER
+  \n     ENDOFLINE
+  m      VARIABLE
+  =      EQUAL
+  f      VARIABLE
+  p      VARIABLE
+  \n     ENDOFLINE
+  c      VARIABLE
+  =      EQUAL
+  54.23  NUMBER
+  /      DIVIDE
+  11.96  NUMBER
+  \n     ENDOFLINE
+  y      VARIABLE
+  =      EQUAL
+  m      VARIABLE
+  +      PLUS
+  -      MINUS
+  x      VARIABLE
+  /      DIVIDE
+  10     NUMBER
+  *      MULTIPLY
+  c      VARIABLE
 ```
 
 ## Example 3
@@ -122,42 +124,43 @@ y = b
 ```
 
 ```
-A    VARIABLE
-=    EQUAL
-ceil    GENERIC_FUNC
-(    OPEN_PAREN
-.5    NUMBER
-*    MULTIPLY
-x    VARIABLE
-)    CLOSE_PAREN
-*    MULTIPLY
-0.2    NUMBER
-\n    NEWLINE
-a    VARIABLE
-=    EQUAL
-x    VARIABLE
-*    MULTIPLY
-(    OPEN_PAREN
-1    NUMBER
-/    DIVIDE
-3    NUMBER
-)    CLOSE_PAREN
-\n    NEWLINE
-B    VARIABLE
-=    EQUAL
-sin    GENERIC_FUNC
-(    OPEN_PAREN
-A    VARIABLE
-*    MULTIPLY
-66.666    NUMBER
-)    CLOSE_PAREN
-\n    NEWLINE
-b    VARIABLE
-=    EQUAL
-a    VARIABLE
-B    VARIABLE
-\n    NEWLINE
-y    VARIABLE
-=    EQUAL
-b    VARIABLE
+Tokens:
+  A      VARIABLE
+  =      EQUAL
+  ceil   GENERIC_FUNC
+  (      OPEN_PAREN
+  .5     NUMBER
+  *      MULTIPLY
+  x      VARIABLE
+  )      CLOSE_PAREN
+  *      MULTIPLY
+  0.2    NUMBER
+  \n     ENDOFLINE
+  a      VARIABLE
+  =      EQUAL
+  x      VARIABLE
+  *      MULTIPLY
+  (      OPEN_PAREN
+  1      NUMBER
+  /      DIVIDE
+  3      NUMBER
+  )      CLOSE_PAREN
+  \n     ENDOFLINE
+  B      VARIABLE
+  =      EQUAL
+  sin    GENERIC_FUNC
+  (      OPEN_PAREN
+  A      VARIABLE
+  *      MULTIPLY
+  66.666         NUMBER
+  )      CLOSE_PAREN
+  \n     ENDOFLINE
+  b      VARIABLE
+  =      EQUAL
+  a      VARIABLE
+  B      VARIABLE
+  \n     ENDOFLINE
+  y      VARIABLE
+  =      EQUAL
+  b      VARIABLE
 ```

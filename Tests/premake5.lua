@@ -1,1 +1,2 @@
 include "LexerTest"
+-- include "ParserTest"

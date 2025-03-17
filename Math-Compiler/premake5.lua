@@ -15,6 +15,7 @@ project "Math-Compiler"
 
     files { 
         "include/**.hpp", 
+        "src/**.hpp",
         "src/**.cpp" 
     }
 
