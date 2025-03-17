@@ -5,5 +5,8 @@ workspace "Mathlang"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "Math-Compiler"
-include "Tests"
+include "Brose"
+
+group "Tests"
+   include "Tests"
+group ""

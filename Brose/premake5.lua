@@ -1,4 +1,4 @@
-project "Math-Compiler"
+project "Brose"
     kind "StaticLib"
     language "C++"
     cppdialect "C++23"

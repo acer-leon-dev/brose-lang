@@ -7,7 +7,7 @@ project "ParserTest"
     targetname "mathlexertest"
 
     includedirs {
-        "%{wks.location}/Math-Compiler/include"
+        "%{wks.location}/Brose/include"
     }
 
     files {
@@ -15,7 +15,7 @@ project "ParserTest"
     }
 
     links {
-        "Math-Compiler"
+        "Brose"
     }
 
     filter "configurations:Debug"

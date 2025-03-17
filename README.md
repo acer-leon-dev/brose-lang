@@ -1,7 +1,25 @@
-# Math Language
+# Brose
+
+#### *Blue Rose.*
+
 A scripting language with a mathematical syntax that compiles to a C++ object which can be called with an input parameter to return a value that corresponds with the function outlined in the script.
 
-# Examples
+## Setup
+
+### Dependencies
+- [Boost.Regex 7.0.1](https://github.com/boostorg/regex)
+
+### Prerequisites
+- [Premake5](https://github.com/premake/premake-core)
+
+```
+git clone https://github.com/acer-leon-dev/math-lang
+premake5 gmake
+make
+```
+Or use any other build system
+
+## Examples
 
 ### [EXAMPLE1.math](docs\Examples\EXAMPLE1.math)
 ```
