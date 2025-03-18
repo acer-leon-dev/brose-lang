@@ -4,28 +4,22 @@
 enum class TokenType : int
 {
     NOT_A_TOKEN = -1,
-
     ENDOFLINE,
-    
     VARIABLE,
     NUMBER,
-    
-    OPEN_PAREN,
-    CLOSE_PAREN,
-    ABS,
-
-    EQUAL,
-    PLUS,
-    MINUS,
-    MULTIPLY,
-    DIVIDE,
-    EXPONENT,
-
-    FACTORIAL,
-    
-    MOD,
-    GENERIC_FUNCTION,
-    LOGARITHM_FUNCTION
+    OP_OPEN_PAREN,
+    OP_CLOSE_PAREN,
+    OP_ABS,
+    OP_EQUAL,
+    OP_PLUS,
+    OP_MINUS,
+    OP_MULTIPLY,
+    OP_DIVIDE,
+    OP_EXPONENT,
+    OP_FACTORIAL,
+    OP_MOD,
+    FUNCTION_GENERIC,
+    FUNCTION_LOGARITHM
 };
 
 struct Token
@@ -37,6 +31,7 @@ struct Token
     Token(TokenType type, const std::string& value);
     operator bool();
     bool operator<=>(const Token &) const = default;
+    static std::string typeToString(TokenType t);
 };
 
 class Lexer

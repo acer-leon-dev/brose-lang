@@ -3,33 +3,6 @@
 namespace 
 {
 
-std::string tokenTypeToString(TokenType t)
-{
-    using enum TokenType;
-    
-    switch (t) {
-        case NOT_A_TOKEN: return "NOT_A_TOKEN";
-        case ENDOFLINE: return "ENDOFLINE";
-        case VARIABLE: return "VARIABLE";
-        case NUMBER: return "NUMBER";
-        case OPEN_PAREN: return "OPEN_PAREN";
-        case CLOSE_PAREN: return "CLOSE_PAREN";
-        case ABS: return "ABS";
-        case EQUAL: return "EQUAL";
-        case PLUS: return "PLUS";
-        case MINUS: return "MINUS";
-        case MULTIPLY: return "MULTIPLY";
-        case DIVIDE: return "DIVIDE";
-        case EXPONENT: return "EXPONENT";
-        case FACTORIAL: return "FACTORIAL";
-        case MOD: return "MOD";
-        case GENERIC_FUNCTION: return "GENERIC_FUNCTION";
-        case LOGARITHM_FUNCTION: return "LOGARITHM_FUNCTION";
-    }   
-
-    return "";
-}
-
 std::string controlToString(char c)
 {
     switch (c) {
@@ -99,7 +72,7 @@ int run(const std::vector<std::string>& args) {
     // Print token values and types
     std::cout << "Tokens:\n";
     for (auto tok : tokens) {
-        std::cout << "  "<< controlToString(tok.value) << "\t " << tokenTypeToString(tok.type) << "\n";
+        std::cout << "  "<< controlToString(tok.value) << "\t " << Token::typeToString(tok.type) << "\n";
     }
 
     return EXIT_SUCCESS;
@@ -134,7 +107,7 @@ int eval(const std::string& src, std::vector<Token>& dest) {
 
 int print(const std::vector<Token>& tokens) {
     for (auto tok : tokens) {
-        std::cout << controlToString(tok.value) << "\t " << tokenTypeToString(tok.type) << "\n";
+        std::cout << controlToString(tok.value) << "\t " << Token::typeToString(tok.type) << "\n";
     }
 
     return 0;

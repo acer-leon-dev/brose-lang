@@ -2,33 +2,6 @@
 #include "Boost/regex.hpp"
 using enum TokenType;
 
-std::string type_to_string(TokenType t)
-{
-    using enum TokenType;
-    
-    switch (t) {
-        case NOT_A_TOKEN: return "NOT_A_TOKEN";
-        case ENDOFLINE: return "ENDOFLINE";
-        case VARIABLE: return "VARIABLE";
-        case NUMBER: return "NUMBER";
-        case OPEN_PAREN: return "OPEN_PAREN";
-        case CLOSE_PAREN: return "CLOSE_PAREN";
-        case ABS: return "ABS";
-        case EQUAL: return "EQUAL";
-        case PLUS: return "PLUS";
-        case MINUS: return "MINUS";
-        case MULTIPLY: return "MULTIPLY";
-        case DIVIDE: return "DIVIDE";
-        case EXPONENT: return "EXPONENT";
-        case FACTORIAL: return "FACTORIAL";
-        case MOD: return "MOD";
-        case GENERIC_FUNCTION: return "GENERIC_FUNCTION";
-        case LOGARITHM_FUNCTION: return "LOGARITHM_FUNCTION";
-    }   
-
-    return "";
-}
-
 std::string decontrol(std::string str)
 {   
     // static boost::regex r_sqte { R"(\')" };
@@ -78,7 +51,7 @@ public:
     {
         total_tests++;
         std::vector<Token> actual = Lexer::tokenize(input);
-        // bool passed = std::equal(actual.begin(), actual.end(), expected.begin(), actual.end());
+        // bool passed = std::OP_equal(actual.begin(), actual.end(), expected.begin(), actual.end());
         bool passed = actual == expected;
 
         std::cout << "!------------------------------------------------!\n";
@@ -155,23 +128,23 @@ int main()
         "d = c mod 4 - 2\n"
         "y = d ^ ( 1/3 ) * b",
         {
-            { VARIABLE, "a" }, { EQUAL, "=" }, { NUMBER, "2" },
-            { EXPONENT, "^" }, { NUMBER, "3" }, { MINUS, "-" },
-            { GENERIC_FUNCTION, "floor" }, { OPEN_PAREN, "(" }, { NUMBER, "3.50" },
-            { CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" }, { VARIABLE, "b" },
-            { EQUAL, "=" }, { NUMBER, "0.333" }, { MULTIPLY, "*" },
-            { VARIABLE, "a" }, { OPEN_PAREN, "(" }, { NUMBER, "5" },
-            { MINUS, "-" }, { NUMBER, "1.2" }, { CLOSE_PAREN, ")" },
-            { ENDOFLINE, "\n" }, { VARIABLE, "c" }, { EQUAL, "=" },
-            { NUMBER, "4" }, { DIVIDE, "/" }, { NUMBER, "3" },
-            { PLUS, "+" }, { NUMBER, ".5" }, { VARIABLE, "x" },
-            { ENDOFLINE, "\n" }, { VARIABLE, "d" }, { EQUAL, "=" },
-            { VARIABLE, "c" }, { MOD, "mod" }, { NUMBER, "4" },
-            { MINUS, "-" }, { NUMBER, "2" }, { ENDOFLINE, "\n" },
-            { VARIABLE, "y" }, { EQUAL, "=" }, { VARIABLE, "d" },
-            { EXPONENT, "^" }, { OPEN_PAREN, "(" }, { NUMBER, "1" },
-            { DIVIDE, "/" }, { NUMBER, "3" }, { CLOSE_PAREN, ")" },
-            { MULTIPLY, "*" }, { VARIABLE, "b" }
+            { VARIABLE, "a" }, { OP_EQUAL, "=" }, { NUMBER, "2" },
+            { OP_EXPONENT, "^" }, { NUMBER, "3" }, { OP_MINUS, "-" },
+            { FUNCTION_GENERIC, "floor" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "3.50" },
+            { OP_CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" }, { VARIABLE, "b" },
+            { OP_EQUAL, "=" }, { NUMBER, "0.333" }, { OP_MULTIPLY, "*" },
+            { VARIABLE, "a" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "5" },
+            { OP_MINUS, "-" }, { NUMBER, "1.2" }, { OP_CLOSE_PAREN, ")" },
+            { ENDOFLINE, "\n" }, { VARIABLE, "c" }, { OP_EQUAL, "=" },
+            { NUMBER, "4" }, { OP_DIVIDE, "/" }, { NUMBER, "3" },
+            { OP_PLUS, "+" }, { NUMBER, ".5" }, { VARIABLE, "x" },
+            { ENDOFLINE, "\n" }, { VARIABLE, "d" }, { OP_EQUAL, "=" },
+            { VARIABLE, "c" }, { OP_MOD, "mod" }, { NUMBER, "4" },
+            { OP_MINUS, "-" }, { NUMBER, "2" }, { ENDOFLINE, "\n" },
+            { VARIABLE, "y" }, { OP_EQUAL, "=" }, { VARIABLE, "d" },
+            { OP_EXPONENT, "^" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "1" },
+            { OP_DIVIDE, "/" }, { NUMBER, "3" }, { OP_CLOSE_PAREN, ")" },
+            { OP_MULTIPLY, "*" }, { VARIABLE, "b" }
         }
     };
     test1.run_test();
@@ -185,19 +158,19 @@ int main()
         "c = 54.23/11.96\n"
         "y = m + -x / 10 * c",
         {
-            { VARIABLE, "f" }, { EQUAL, "=" }, { LOGARITHM_FUNCTION, "log10" },
-            { OPEN_PAREN, "(" }, { VARIABLE, "x" }, { EXPONENT, "^" },
-            { NUMBER, "2" }, { CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" },
-            { VARIABLE, "p" }, { EQUAL, "=" }, { OPEN_PAREN, "(" },
-            { NUMBER, "3.14159" }, { CLOSE_PAREN, ")" }, { EXPONENT, "^" },
+            { VARIABLE, "f" }, { OP_EQUAL, "=" }, { FUNCTION_LOGARITHM, "log10" },
+            { OP_OPEN_PAREN, "(" }, { VARIABLE, "x" }, { OP_EXPONENT, "^" },
+            { NUMBER, "2" }, { OP_CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" },
+            { VARIABLE, "p" }, { OP_EQUAL, "=" }, { OP_OPEN_PAREN, "(" },
+            { NUMBER, "3.14159" }, { OP_CLOSE_PAREN, ")" }, { OP_EXPONENT, "^" },
             { NUMBER, "2" }, { ENDOFLINE, "\n" }, { VARIABLE, "m" },
-            { EQUAL, "=" }, { VARIABLE, "f" }, { VARIABLE, "p" },
-            { ENDOFLINE, "\n" }, { VARIABLE, "c" }, { EQUAL, "=" },
-            { NUMBER, "54.23" }, { DIVIDE, "/" }, { NUMBER, "11.96" },
-            { ENDOFLINE, "\n" }, { VARIABLE, "y" }, { EQUAL, "=" },
-            { VARIABLE, "m" }, { PLUS, "+" }, { MINUS, "-" },
-            { VARIABLE, "x" }, { DIVIDE, "/" }, { NUMBER, "10" },
-            { MULTIPLY, "*" }, { VARIABLE, "c" }
+            { OP_EQUAL, "=" }, { VARIABLE, "f" }, { VARIABLE, "p" },
+            { ENDOFLINE, "\n" }, { VARIABLE, "c" }, { OP_EQUAL, "=" },
+            { NUMBER, "54.23" }, { OP_DIVIDE, "/" }, { NUMBER, "11.96" },
+            { ENDOFLINE, "\n" }, { VARIABLE, "y" }, { OP_EQUAL, "=" },
+            { VARIABLE, "m" }, { OP_PLUS, "+" }, { OP_MINUS, "-" },
+            { VARIABLE, "x" }, { OP_DIVIDE, "/" }, { NUMBER, "10" },
+            { OP_MULTIPLY, "*" }, { VARIABLE, "c" }
         }
     };
     test2.run_test();
@@ -211,19 +184,19 @@ int main()
         "b = aB\n"
         "y = b",
         {
-            { VARIABLE, "A" }, { EQUAL, "=" }, { GENERIC_FUNCTION, "ceil" },
-            { OPEN_PAREN, "(" }, { NUMBER, ".5" }, { MULTIPLY, "*" },
-            { VARIABLE, "x" }, { CLOSE_PAREN, ")" }, { MULTIPLY, "*" },
+            { VARIABLE, "A" }, { OP_EQUAL, "=" }, { FUNCTION_GENERIC, "ceil" },
+            { OP_OPEN_PAREN, "(" }, { NUMBER, ".5" }, { OP_MULTIPLY, "*" },
+            { VARIABLE, "x" }, { OP_CLOSE_PAREN, ")" }, { OP_MULTIPLY, "*" },
             { NUMBER, "0.2" }, { ENDOFLINE, "\n" }, { VARIABLE, "a" },
-            { EQUAL, "=" }, { VARIABLE, "x" }, { MULTIPLY, "*" },
-            { OPEN_PAREN, "(" }, { NUMBER, "1" }, { DIVIDE, "/" },
-            { NUMBER, "3" }, { CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" },
-            { VARIABLE, "B" }, { EQUAL, "=" }, { GENERIC_FUNCTION, "sin" },
-            { OPEN_PAREN, "(" }, { VARIABLE, "A" }, { MULTIPLY, "*" },
-            { NUMBER, "66.666" }, { CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" },
-            { VARIABLE, "b" }, { EQUAL, "=" }, { VARIABLE, "a" },
+            { OP_EQUAL, "=" }, { VARIABLE, "x" }, { OP_MULTIPLY, "*" },
+            { OP_OPEN_PAREN, "(" }, { NUMBER, "1" }, { OP_DIVIDE, "/" },
+            { NUMBER, "3" }, { OP_CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" },
+            { VARIABLE, "B" }, { OP_EQUAL, "=" }, { FUNCTION_GENERIC, "sin" },
+            { OP_OPEN_PAREN, "(" }, { VARIABLE, "A" }, { OP_MULTIPLY, "*" },
+            { NUMBER, "66.666" }, { OP_CLOSE_PAREN, ")" }, { ENDOFLINE, "\n" },
+            { VARIABLE, "b" }, { OP_EQUAL, "=" }, { VARIABLE, "a" },
             { VARIABLE, "B" }, { ENDOFLINE, "\n" }, { VARIABLE, "y" },
-            { EQUAL, "=" }, { VARIABLE, "b" }
+            { OP_EQUAL, "=" }, { VARIABLE, "b" }
         }
     };
     test3.run_test();

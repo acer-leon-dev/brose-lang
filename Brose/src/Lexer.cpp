@@ -2,6 +2,7 @@
 #include "Extendedctype.hpp"
 #include "Regex.hpp"
 
+
 Token::Token()
 :   type { TokenType::NOT_A_TOKEN }
 {
@@ -20,6 +21,33 @@ Token::operator bool()
     return type != TokenType::NOT_A_TOKEN && !value.empty();
 }
 
+std::string Token::typeToString(TokenType t)
+{
+    using enum TokenType;
+    
+    switch (t) {
+        case NOT_A_TOKEN: return "NOT_A_TOKEN";
+        case ENDOFLINE: return "ENDOFLINE";
+        case VARIABLE: return "VARIABLE";
+        case NUMBER: return "NUMBER";
+        case OP_OPEN_PAREN: return "OP_OP_OPEN_PAREN";
+        case OP_CLOSE_PAREN: return "OP_OP_CLOSE_PAREN";
+        case OP_ABS: return "OP_ABS";
+        case OP_EQUAL: return "OP_EQUAL";
+        case OP_PLUS: return "OP_PLUS";
+        case OP_MINUS: return "OP_MINUS";
+        case OP_MULTIPLY: return "OP_MULTIPLY";
+        case OP_DIVIDE: return "OP_DIVIDE";
+        case OP_EXPONENT: return "OP_EXPONENT";
+        case OP_FACTORIAL: return "OP_FACTORIAL";
+        case OP_MOD: return "OP_MOD";
+        case FUNCTION_GENERIC: return "FUNCTION_GENERIC";
+        case FUNCTION_LOGARITHM: return "FUNCTION_LOGARITHM";
+    }   
+
+    return "";
+}
+
 namespace
 {
 
@@ -27,7 +55,7 @@ TokenType get_keyword_type(const std::string& token)
 {
     using TokenMap = std::unordered_map<std::string, TokenType>; 
     static const TokenMap keywords { 
-        { "mod", TokenType::MOD } 
+        { "mod", TokenType::OP_MOD } 
     };
 
     TokenMap::const_iterator res = keywords.find(token);
@@ -39,15 +67,15 @@ TokenType get_operator_type(char op)
     using OperatorTokenMap = std::unordered_map<char, TokenType>;
     static const OperatorTokenMap operators {
         { '\n', TokenType::ENDOFLINE },
-        { '(',  TokenType::OPEN_PAREN },
-        { ')',  TokenType::CLOSE_PAREN },
-        { '=',  TokenType::EQUAL },
-        { '+',  TokenType::PLUS },
-        { '-',  TokenType::MINUS },
-        { '*',  TokenType::MULTIPLY },
-        { '/',  TokenType::DIVIDE },
-        { '^',  TokenType::EXPONENT },
-        { '|',  TokenType::ABS }
+        { '(',  TokenType::OP_OPEN_PAREN },
+        { ')',  TokenType::OP_CLOSE_PAREN },
+        { '=',  TokenType::OP_EQUAL },
+        { '+',  TokenType::OP_PLUS },
+        { '-',  TokenType::OP_MINUS },
+        { '*',  TokenType::OP_MULTIPLY },
+        { '/',  TokenType::OP_DIVIDE },
+        { '^',  TokenType::OP_EXPONENT },
+        { '|',  TokenType::OP_ABS }
     };
 
     OperatorTokenMap::const_iterator res = operators.find(op);
@@ -82,12 +110,12 @@ std::vector<Token> Lexer::tokenize(const std::string& src)
             // * Generic functions (regular functions with one parameter)
             else if (match = regex::match_start(R"(sin|cos|tan|floor|ceil)", src, pos);
                 !match.empty()) {
-                type = GENERIC_FUNCTION;
+                type = FUNCTION_GENERIC;
             }
             // * Logarithmic function syntax i.e., ln, logN
             else if (match = regex::match_start(R"(\b(ln|(log((\d*)(\.?)(\d*))))\b)", src, pos);
                 !match.empty()) {
-                type = LOGARITHM_FUNCTION;
+                type = FUNCTION_LOGARITHM;
             }
             // * One-letter variables
             else if (match = regex::match_start(R"([[:alpha:]])", src, pos);
