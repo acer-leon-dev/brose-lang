@@ -4,7 +4,7 @@
 enum class TokenType : int
 {
     NOT_A_TOKEN = 0,
-    ENDOFLINE,
+    EOL,
     VARIABLE,
     NUMBER,
     OP_OPEN_PAREN,

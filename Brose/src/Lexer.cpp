@@ -18,16 +18,16 @@ Token::Token(TokenType type, const std::string& value)
 
 Token::operator bool()
 {
-    return type != TokenType::NOT_A_TOKEN && !value.empty();
+    return static_cast<bool>(type) && !value.empty();
 }
 
-std::string Token::typeToString(TokenType t)
+std::string Token::typeToString(TokenType type)
 {
     using enum TokenType;
     
-    switch (t) {
+    switch (type) {
         case NOT_A_TOKEN: return "NOT_A_TOKEN";
-        case ENDOFLINE: return "ENDOFLINE";
+        case EOL: return "EOL";
         case VARIABLE: return "VARIABLE";
         case NUMBER: return "NUMBER";
         case OP_OPEN_PAREN: return "OP_OP_OPEN_PAREN";
@@ -66,7 +66,7 @@ TokenType get_operator_type(char op)
 {
     using OperatorTokenMap = std::unordered_map<char, TokenType>;
     static const OperatorTokenMap operators {
-        { '\n', TokenType::ENDOFLINE },
+        { '\n', TokenType::EOL },
         { '(',  TokenType::OP_OPEN_PAREN },
         { ')',  TokenType::OP_CLOSE_PAREN },
         { '=',  TokenType::OP_EQUAL },
@@ -140,7 +140,7 @@ std::vector<Token> Lexer::tokenize(const std::string& src)
             type = get_operator_type(match[0]);
         }
         
-        if (type != NOT_A_TOKEN) {
+        if (static_cast<bool>(type)) {
             tokens.emplace_back(type, match);
         }
         pos += match.length() - 1;
