@@ -2,6 +2,9 @@
 #include "Boost/regex.hpp"
 using enum TokenType;
 
+namespace
+{
+
 std::string decontrol(std::string str)
 {   
     // static boost::regex r_sqte { R"(\')" };
@@ -30,96 +33,63 @@ std::string decontrol(std::string str)
 
     return str;
 }
-
-class UnitTest
+    
+std::string token_to_string(const Token& token)
 {
-public:
-    const std::string test_name;
-    const std::string input;
-    std::vector<Token> expected;
-    static inline std::size_t successful_tests = 0;
-    static inline std::size_t total_tests = 0;
+    return "{" + token.value + ", " + Token::typeToString(token.type) + "}";
+}
 
-    UnitTest(const std::string& test_name, const std::string& input, const std::vector<Token>& expected_output)
-    :   test_name { test_name },
-        input { input },
-        expected { expected_output }
-    {
+std::string token_vector_to_string(const std::vector<Token>& vector) 
+{
+    std::string str;
+    // str += "{ ";
+    for (std::size_t i = 0; i < vector.size() - 1; i++) {
+        str += decontrol(vector[i].value) + " ";
     }
+    str += vector.back().value;
+    // str += " }";
+    return str;
+}
 
-    bool run_test(bool output = true)
+inline std::size_t successful_tests = 0;
+inline std::size_t total_tests = 0;
+
+bool RunUnitTest(const std::string& test_name, const std::string& input, const std::vector<Token>& expected, bool log = true)
+{
+    total_tests++;
+    std::vector<Token> actual = Lexer::tokenize(input);
+    bool passed = actual == expected;
+
+    if (!log)
     {
-        total_tests++;
-        std::vector<Token> actual = Lexer::tokenize(input);
-        // bool passed = std::OP_equal(actual.begin(), actual.end(), expected.begin(), actual.end());
-        bool passed = actual == expected;
-
-        std::cout << "!------------------------------------------------!\n";
-        // if (passed) {
-        //     successful_tests++;
-        //     std::cout << "Test \"" << test_name << "\": SUCCESS!\n";
-        //     std::cout << "Output:\n\t";
-        //     print_tokens(actual);
-        //     std::cout << "\n";
-        // }
-        // else {
-        //     std::cout << "Test \"" << test_name << "\": FAIL!\n";
-            
-        //     std::cout << "Expected output:\n\t";
-        //     print_tokens(expected);
-        //     std::cout << "\n";
-            
-        //     std::cout << "Incorrect output:\n\t";
-        //     print_tokens(actual);
-        //     std::cout << "\n";
-        // }
-
-        if (!output)
-        {
-            if (passed)
-            {
-                successful_tests++;
-                return passed;
-            }
-        }
-        
         if (passed) {
             successful_tests++;
-            std::cout << "Test \"" << test_name << "\": SUCCESS!\n";
         }
-        else {
-            std::cout << "Test \"" << test_name << "\": FAIL!\n";    
-        }
-
-        std::cout << "Expected output:\n\t";
-        print_tokens(expected);
-        std::cout << "\n";
-        
-        std::cout << "Actual output:\n\t";
-        print_tokens(actual);
-        std::cout << "\n";
-
-        std::cout << "!------------------------------------------------!\n";
-        std::cout << "\n";
-
         return passed;
     }
-
-private:
-    void print_tokens(const std::vector<Token>& vector) 
-    {
-        // std::cout << "{ ";
-        for (std::size_t i = 0; i < vector.size() - 1; i++) {
-            std::cout << decontrol(vector[i].value) << " ";
-        }
-        std::cout << vector.back().value;
-        // std::cout << " }";
+    
+    std::cout << "!------------------------------------------------!\n";
+    if (passed) {
+        successful_tests++;
+        std::cout << "Test \"" << test_name << "\": SUCCESS!\n";
+        std::cout << "Output:\n\t" << token_vector_to_string(actual) << "\n";
     }
+    else {
+        std::cout << "Test \"" << test_name << "\": FAIL!\n";
+        std::cout << "Expected output:\n\t" << token_vector_to_string(expected) << "\n";
+        std::cout << "Incorrect output:\n\t" << token_vector_to_string(actual) << "\n";
+    }
+
+    std::cout << "!------------------------------------------------!\n";
+    std::cout << "\n";
+    return passed;
+}
+
 };
 
 int main()
 {;
-    UnitTest test1 {
+    RunUnitTest(
         "1",
         "// EXAMPLE1.brose\n"
         "a = 2^3 - floor(3.50)\n"
@@ -146,10 +116,9 @@ int main()
             { OP_DIVIDE, "/" }, { NUMBER, "3" }, { OP_CLOSE_PAREN, ")" },
             { OP_MULTIPLY, "*" }, { VARIABLE, "b" }
         }
-    };
-    test1.run_test();
+    );
 
-    UnitTest test2 {
+    RunUnitTest(
         "2",
         "// EXAMPLE2.brose\n"
         "f = log10(x^2)\n"
@@ -172,10 +141,9 @@ int main()
             { VARIABLE, "x" }, { OP_DIVIDE, "/" }, { NUMBER, "10" },
             { OP_MULTIPLY, "*" }, { VARIABLE, "c" }
         }
-    };
-    test2.run_test();
+    );
 
-    UnitTest test3 {
+    RunUnitTest(
         "3",
         "// EXAMPLE3.brose\n"
         "A = ceil(.5*x) * 0.2\n"
@@ -198,11 +166,10 @@ int main()
             { VARIABLE, "B" }, { ENDOFLINE, "\n" }, { VARIABLE, "y" },
             { OP_EQUAL, "=" }, { VARIABLE, "b" }
         }
-    };
-    test3.run_test();
+    );
 
     std::cout << "!------------------------------------------------!\n";
-    std::cout << "# Successful tests: " << UnitTest::successful_tests << "/" << UnitTest::total_tests << " tests\n";
+    std::cout << "# Successful tests: " << successful_tests << "/" << total_tests << " tests\n";
     std::cout << "!------------------------------------------------!\n";
 
 }
