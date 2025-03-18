@@ -53,3 +53,7 @@ B = sin(A * 66.666)
 b = aB
 y = b
 ```
+
+## Supported Language
+Brose currently only has bindings for:
+* C++
