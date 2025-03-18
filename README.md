@@ -5,6 +5,9 @@
 A scripting language with a mathematical syntax.
 Compiles to a C++ object (an AST) which can be called with an input parameter (x) to return a value (y), just like a mathematical function/algorithm.
 
+## Supported Languages
+Brose currently only has support for *C++*.
+
 ## Setup
 
 ### Dependencies
@@ -54,7 +57,3 @@ B = sin(A * 66.666)
 b = aB
 y = b
 ```
-
-## Supported Language
-Brose currently only has bindings for:
-* C++
