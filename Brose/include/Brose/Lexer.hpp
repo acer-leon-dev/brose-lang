@@ -1,5 +1,5 @@
 #pragma once
-#include "../PCH.hpp"
+#include "PCH.hpp"
 
 enum class TokenType : int
 {
