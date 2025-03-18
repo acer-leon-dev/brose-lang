@@ -7,7 +7,7 @@ A scripting language with a mathematical syntax that compiles to a C++ object wh
 ## Setup
 
 ### Dependencies
-- [Boost.Regex 7.0.1](https://github.com/boostorg/regex)
+- [Boost.Regex](https://github.com/boostorg/regex)
 
 ### Prerequisites
 - [Premake5](https://github.com/premake/premake-core)
