@@ -18,11 +18,13 @@ Brose currently only has support for *C++*.
 - Your favorite build system
 
 ### Config
+*Note: Run `premake5 --help` for a list of support build systems and configuration settings.*
 ```
 git clone https://github.com/acer-leon-dev/brose-lang
 premake5 <buildsystem>
 ```
-Or you can run premake with any other build system.
+Then build with your chosen build system.
+*Note: Brose has only been tested with GCC/MinGW on Windows.*
 
 ## Examples
 
