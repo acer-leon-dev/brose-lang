@@ -27,7 +27,14 @@ binary_operation        = ( expression, binary_operator, expression )
 alt_mult_operation      = expression, expression ;
 
 unary_operation         = ( "|", expression, "|" ) 
-                        | ( "! ");
+                        | ( independent_expr, "!" );
+
+
+independent_expr        = parenthesized_expr
+                        | variable 
+                        | function_call ;
+
+parenthesized_expr      = "(", expression, ")" ;
 
 function_name           = generic_function 
                         | logarithmic_function ;
