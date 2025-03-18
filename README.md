@@ -8,7 +8,7 @@ Compiles to a C++ object (an AST) which can be called with an input parameter (x
 ## Setup
 
 ### Dependencies
-- [Boost.Regex](https://github.com/boostorg/regex)
+- [Boost.Regex](https://github.com/boostorg/regex) (header-only)
 
 ### Prerequisites
 - [Premake5](https://github.com/premake/premake-core)
