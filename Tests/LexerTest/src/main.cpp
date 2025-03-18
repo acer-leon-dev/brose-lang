@@ -94,7 +94,7 @@ int run(const std::vector<std::string>& args) {
     }
 
     // Tokenize source file
-    std::vector<Token> tokens = tokenizeSource(source);
+    std::vector<Token> tokens = Lexer::tokenize(source);
 
     // Print token values and types
     std::cout << "Tokens:\n";
@@ -115,7 +115,7 @@ int eval(const std::string& src, std::vector<Token>& dest) {
     std::vector<Token> tokens;
 
     try {
-        tokens = tokenizeSource(src);
+        tokens = Lexer::tokenize(src);
     }
     catch (std::logic_error e) {
         return 1;

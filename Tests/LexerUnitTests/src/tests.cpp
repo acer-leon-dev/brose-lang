@@ -77,7 +77,7 @@ public:
     bool run_test(bool output = true)
     {
         total_tests++;
-        std::vector<Token> actual = tokenizeSource(input);
+        std::vector<Token> actual = Lexer::tokenize(input);
         // bool passed = std::equal(actual.begin(), actual.end(), expected.begin(), actual.end());
         bool passed = actual == expected;
 

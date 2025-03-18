@@ -39,4 +39,11 @@ struct Token
     bool operator<=>(const Token &) const = default;
 };
 
-std::vector<Token> tokenizeSource(const std::string& src);
+class Lexer
+{
+public:
+    static std::vector<Token> tokenize(const std::string& src); 
+    const std::vector<Token>& getTokens();
+private:
+    std::vector<Token> tokens;
+};

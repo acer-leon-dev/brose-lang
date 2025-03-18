@@ -56,7 +56,7 @@ TokenType get_operator_type(char op)
 
 }; // {anonymous} namespace
 
-std::vector<Token> tokenizeSource(const std::string& src)
+std::vector<Token> Lexer::tokenize(const std::string& src)
 {
     using enum TokenType;
     std::vector<Token> tokens;
@@ -119,4 +119,9 @@ std::vector<Token> tokenizeSource(const std::string& src)
     }
         
     return tokens;
-} // tokenizeSource
+} 
+
+const std::vector<Token>& Lexer::getTokens()
+{
+    return tokens;
+}
