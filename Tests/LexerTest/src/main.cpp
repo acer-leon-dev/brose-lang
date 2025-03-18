@@ -1,4 +1,4 @@
-#include "Brose/Mathcompiler.hpp"
+#include "Brose/Lexer.hpp"
 
 namespace 
 {
@@ -8,7 +8,7 @@ std::string tokenTypeToString(TokenType t)
     using enum TokenType;
     
     switch (t) {
-        case INVALID_TOKEN: return "NOT_A_TOKEN";
+        case NOT_A_TOKEN: return "NOT_A_TOKEN";
         case ENDOFLINE: return "ENDOFLINE";
         case VARIABLE: return "VARIABLE";
         case NUMBER: return "NUMBER";
@@ -21,9 +21,10 @@ std::string tokenTypeToString(TokenType t)
         case MULTIPLY: return "MULTIPLY";
         case DIVIDE: return "DIVIDE";
         case EXPONENT: return "EXPONENT";
+        case FACTORIAL: return "FACTORIAL";
         case MOD: return "MOD";
-        case GENERIC_FUNCTION: return "GENERIC_FUNC";
-        case LOGARITHM_FUNCTION: return "LOG";
+        case GENERIC_FUNCTION: return "GENERIC_FUNCTION";
+        case LOGARITHM_FUNCTION: return "LOGARITHM_FUNCTION";
     }   
 
     return "";
@@ -122,7 +123,7 @@ int eval(const std::string& src, std::vector<Token>& dest) {
 
     for (const Token& t : tokens)
     {
-        if (t.type == TokenType::INVALID_TOKEN) {
+        if (t.type == TokenType::NOT_A_TOKEN) {
             return 1;
         }
     }
