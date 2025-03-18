@@ -11,7 +11,7 @@ project "LexerUnitTests"
     }
 
     files {
-        "**.cpp" 
+        "src/**.cpp" 
     }
 
     links {

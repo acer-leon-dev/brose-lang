@@ -1,4 +1,4 @@
-#include "Lexer.hpp"
+#include "Brose/Lexer.hpp"
 
 std::string generate_brose_script()
 {
