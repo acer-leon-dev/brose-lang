@@ -2,6 +2,7 @@
 
 #include <boost/regex.hpp>
 
+#include <algorithm>
 #include <cctype>
 #include <filesystem>
 #include <format>
