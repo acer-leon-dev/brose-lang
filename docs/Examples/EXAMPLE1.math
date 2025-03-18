@@ -1,6 +1,0 @@
-// EXAMPLE1.math
-a = 2^3 - floor(3.50)
-b = 0.333 * a(5 - 1.2)
-c = 4 / 3 + .5x
-d = c mod 4 - 2
-y = d ^ ( 1/3 ) * b
