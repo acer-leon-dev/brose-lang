@@ -36,6 +36,7 @@ struct Token
     Token();
     Token(TokenType type, const std::string& value);
     operator bool();
+    bool operator<=>(const Token &) const = default;
 };
 
 std::vector<Token> tokenizeSource(const std::string& src);
