@@ -17,12 +17,10 @@ Brose currently only has support for *C++*.
 - [Premake5](https://github.com/premake/premake-core)
 - Your favorite build system
 
-### Build
-With GNU Make:
+### Config
 ```
 git clone https://github.com/acer-leon-dev/brose-lang
-premake5 gmake
-make
+premake5 <buildsystem>
 ```
 Or you can run premake with any other build system.
 
