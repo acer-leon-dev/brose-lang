@@ -1,10 +1,10 @@
-project "LexerTest"
+project "LexerREPL"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++23"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
     objdir ("%{wks.location}/bin/obj/" .. outputdir .. "/%{prj.name}")
-    targetname "broselexertest"
+    targetname "brose-lexerrepl"
 
     includedirs {
         "%{wks.location}/Brose/include"

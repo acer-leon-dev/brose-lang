@@ -1,3 +1,3 @@
-include "LexerTest"
 include "LexerUnitTests"
+include "LexerREPL"
 -- include "ParserTest"
