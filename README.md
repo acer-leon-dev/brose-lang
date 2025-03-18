@@ -11,13 +11,16 @@ A scripting language with a mathematical syntax that compiles to a C++ object wh
 
 ### Prerequisites
 - [Premake5](https://github.com/premake/premake-core)
+- Your favorite build system
 
+### Build
+With GNU Make:
 ```
 git clone https://github.com/acer-leon-dev/brose-lang
 premake5 gmake
 make
 ```
-Or use any other build system
+Or you can run premake with any other build system.
 
 ## Examples
 
