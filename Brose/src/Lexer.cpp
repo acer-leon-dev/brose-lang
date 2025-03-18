@@ -1,6 +1,6 @@
 #include "Brose/Lexer.hpp"
 #include "Extendedctype.hpp"
-#include "regex.hpp"
+#include "Regex.hpp"
 
 Token::Token()
 :   type { TokenType::INVALID_TOKEN }
