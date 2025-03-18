@@ -54,7 +54,7 @@ std::string token_vector_to_string(const std::vector<Token>& vector)
 inline std::size_t successful_tests = 0;
 inline std::size_t total_tests = 0;
 
-bool RunUnitTest(const std::string& test_name, const std::string& input, const std::vector<Token>& expected, bool log = true)
+bool RunUnitTest(const std::string& input, const std::vector<Token>& expected, bool log = true)
 {
     total_tests++;
     std::vector<Token> actual = Lexer::tokenize(input);
@@ -71,11 +71,11 @@ bool RunUnitTest(const std::string& test_name, const std::string& input, const s
     std::cout << "!------------------------------------------------!\n";
     if (passed) {
         successful_tests++;
-        std::cout << "Test \"" << test_name << "\": SUCCESS!\n";
+        std::cout << "Test " << total_tests << ": SUCCESS!\n";
         std::cout << "Output:\n\t" << token_vector_to_string(actual) << "\n";
     }
     else {
-        std::cout << "Test \"" << test_name << "\": FAIL!\n";
+        std::cout << "Test " << total_tests << ": FAIL!\n";
         std::cout << "Expected output:\n\t" << token_vector_to_string(expected) << "\n";
         std::cout << "Incorrect output:\n\t" << token_vector_to_string(actual) << "\n";
     }
@@ -90,7 +90,6 @@ bool RunUnitTest(const std::string& test_name, const std::string& input, const s
 int main()
 {;
     RunUnitTest(
-        "1",
         "// EXAMPLE1.brose\n"
         "a = 2^3 - floor(3.50)\n"
         "b = 0.333 * a(5 - 1.2)\n"
@@ -98,28 +97,19 @@ int main()
         "d = c mod 4 - 2\n"
         "y = d ^ ( 1/3 ) * b",
         {
-            { VARIABLE, "a" }, { OP_EQUAL, "=" }, { NUMBER, "2" },
-            { OP_EXPONENT, "^" }, { NUMBER, "3" }, { OP_MINUS, "-" },
-            { FUNCTION_GENERIC, "floor" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "3.50" },
-            { OP_CLOSE_PAREN, ")" }, { EOL, "\n" }, { VARIABLE, "b" },
-            { OP_EQUAL, "=" }, { NUMBER, "0.333" }, { OP_MULTIPLY, "*" },
-            { VARIABLE, "a" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "5" },
-            { OP_MINUS, "-" }, { NUMBER, "1.2" }, { OP_CLOSE_PAREN, ")" },
-            { EOL, "\n" }, { VARIABLE, "c" }, { OP_EQUAL, "=" },
-            { NUMBER, "4" }, { OP_DIVIDE, "/" }, { NUMBER, "3" },
-            { OP_PLUS, "+" }, { NUMBER, ".5" }, { VARIABLE, "x" },
-            { EOL, "\n" }, { VARIABLE, "d" }, { OP_EQUAL, "=" },
-            { VARIABLE, "c" }, { OP_MOD, "mod" }, { NUMBER, "4" },
-            { OP_MINUS, "-" }, { NUMBER, "2" }, { EOL, "\n" },
-            { VARIABLE, "y" }, { OP_EQUAL, "=" }, { VARIABLE, "d" },
-            { OP_EXPONENT, "^" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "1" },
-            { OP_DIVIDE, "/" }, { NUMBER, "3" }, { OP_CLOSE_PAREN, ")" },
+            { VARIABLE, "a" }, { OP_EQUAL, "=" }, { NUMBER, "2" }, { OP_EXPONENT, "^" }, { NUMBER, "3" }, { OP_MINUS, "-" },
+            { FUNCTION_GENERIC, "floor" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "3.50" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" }, { VARIABLE, "b" },
+            { OP_EQUAL, "=" }, { NUMBER, "0.333" }, { OP_MULTIPLY, "*" }, { VARIABLE, "a" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "5" },
+            { OP_MINUS, "-" }, { NUMBER, "1.2" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" }, { VARIABLE, "c" }, { OP_EQUAL, "=" },
+            { NUMBER, "4" }, { OP_DIVIDE, "/" }, { NUMBER, "3" }, { OP_PLUS, "+" }, { NUMBER, ".5" }, { VARIABLE, "x" },
+            { EOL, "\n" }, { VARIABLE, "d" }, { OP_EQUAL, "=" }, { VARIABLE, "c" }, { OP_MOD, "mod" }, { NUMBER, "4" },
+            { OP_MINUS, "-" }, { NUMBER, "2" }, { EOL, "\n" }, { VARIABLE, "y" }, { OP_EQUAL, "=" }, { VARIABLE, "d" },
+            { OP_EXPONENT, "^" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "1" }, { OP_DIVIDE, "/" }, { NUMBER, "3" }, { OP_CLOSE_PAREN, ")" },
             { OP_MULTIPLY, "*" }, { VARIABLE, "b" }
         }
     );
 
     RunUnitTest(
-        "2",
         "// EXAMPLE2.brose\n"
         "f = log10(x^2)\n"
         "p = (3.14159)^2\n"
@@ -127,24 +117,17 @@ int main()
         "c = 54.23/11.96\n"
         "y = m + -x / 10 * c",
         {
-            { VARIABLE, "f" }, { OP_EQUAL, "=" }, { FUNCTION_LOGARITHM, "log10" },
-            { OP_OPEN_PAREN, "(" }, { VARIABLE, "x" }, { OP_EXPONENT, "^" },
-            { NUMBER, "2" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" },
-            { VARIABLE, "p" }, { OP_EQUAL, "=" }, { OP_OPEN_PAREN, "(" },
-            { NUMBER, "3.14159" }, { OP_CLOSE_PAREN, ")" }, { OP_EXPONENT, "^" },
-            { NUMBER, "2" }, { EOL, "\n" }, { VARIABLE, "m" },
-            { OP_EQUAL, "=" }, { VARIABLE, "f" }, { VARIABLE, "p" },
-            { EOL, "\n" }, { VARIABLE, "c" }, { OP_EQUAL, "=" },
-            { NUMBER, "54.23" }, { OP_DIVIDE, "/" }, { NUMBER, "11.96" },
-            { EOL, "\n" }, { VARIABLE, "y" }, { OP_EQUAL, "=" },
-            { VARIABLE, "m" }, { OP_PLUS, "+" }, { OP_MINUS, "-" },
-            { VARIABLE, "x" }, { OP_DIVIDE, "/" }, { NUMBER, "10" },
+            { VARIABLE, "f" }, { OP_EQUAL, "=" }, { FUNCTION_LOGARITHM, "log10" }, { OP_OPEN_PAREN, "(" }, { VARIABLE, "x" }, { OP_EXPONENT, "^" },
+            { NUMBER, "2" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" }, { VARIABLE, "p" }, { OP_EQUAL, "=" }, { OP_OPEN_PAREN, "(" },
+            { NUMBER, "3.14159" }, { OP_CLOSE_PAREN, ")" }, { OP_EXPONENT, "^" }, { NUMBER, "2" }, { EOL, "\n" }, { VARIABLE, "m" },
+            { OP_EQUAL, "=" }, { VARIABLE, "f" }, { VARIABLE, "p" }, { EOL, "\n" }, { VARIABLE, "c" }, { OP_EQUAL, "=" },
+            { NUMBER, "54.23" }, { OP_DIVIDE, "/" }, { NUMBER, "11.96" }, { EOL, "\n" }, { VARIABLE, "y" }, { OP_EQUAL, "=" },
+            { VARIABLE, "m" }, { OP_PLUS, "+" }, { OP_MINUS, "-" }, { VARIABLE, "x" }, { OP_DIVIDE, "/" }, { NUMBER, "10" },
             { OP_MULTIPLY, "*" }, { VARIABLE, "c" }
         }
     );
 
     RunUnitTest(
-        "3",
         "// EXAMPLE3.brose\n"
         "A = ceil(.5*x) * 0.2\n"
         "a = x * (1 / 3)\n"
@@ -152,18 +135,12 @@ int main()
         "b = aB\n"
         "y = b",
         {
-            { VARIABLE, "A" }, { OP_EQUAL, "=" }, { FUNCTION_GENERIC, "ceil" },
-            { OP_OPEN_PAREN, "(" }, { NUMBER, ".5" }, { OP_MULTIPLY, "*" },
-            { VARIABLE, "x" }, { OP_CLOSE_PAREN, ")" }, { OP_MULTIPLY, "*" },
-            { NUMBER, "0.2" }, { EOL, "\n" }, { VARIABLE, "a" },
-            { OP_EQUAL, "=" }, { VARIABLE, "x" }, { OP_MULTIPLY, "*" },
-            { OP_OPEN_PAREN, "(" }, { NUMBER, "1" }, { OP_DIVIDE, "/" },
-            { NUMBER, "3" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" },
-            { VARIABLE, "B" }, { OP_EQUAL, "=" }, { FUNCTION_GENERIC, "sin" },
-            { OP_OPEN_PAREN, "(" }, { VARIABLE, "A" }, { OP_MULTIPLY, "*" },
-            { NUMBER, "66.666" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" },
-            { VARIABLE, "b" }, { OP_EQUAL, "=" }, { VARIABLE, "a" },
-            { VARIABLE, "B" }, { EOL, "\n" }, { VARIABLE, "y" },
+            { VARIABLE, "A" }, { OP_EQUAL, "=" }, { FUNCTION_GENERIC, "ceil" }, { OP_OPEN_PAREN, "(" }, { NUMBER, ".5" }, { OP_MULTIPLY, "*" },
+            { VARIABLE, "x" }, { OP_CLOSE_PAREN, ")" }, { OP_MULTIPLY, "*" }, { NUMBER, "0.2" }, { EOL, "\n" }, { VARIABLE, "a" },
+            { OP_EQUAL, "=" }, { VARIABLE, "x" }, { OP_MULTIPLY, "*" }, { OP_OPEN_PAREN, "(" }, { NUMBER, "1" }, { OP_DIVIDE, "/" },
+            { NUMBER, "3" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" }, { VARIABLE, "B" }, { OP_EQUAL, "=" }, { FUNCTION_GENERIC, "sin" },
+            { OP_OPEN_PAREN, "(" }, { VARIABLE, "A" }, { OP_MULTIPLY, "*" }, { NUMBER, "66.666" }, { OP_CLOSE_PAREN, ")" }, { EOL, "\n" },
+            { VARIABLE, "b" }, { OP_EQUAL, "=" }, { VARIABLE, "a" }, { VARIABLE, "B" }, { EOL, "\n" }, { VARIABLE, "y" },
             { OP_EQUAL, "=" }, { VARIABLE, "b" }
         }
     );
