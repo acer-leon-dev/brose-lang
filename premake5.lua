@@ -1,8 +1,17 @@
 -- premake5.lua
 workspace "Mathlang"
    architecture "x64"
-   configurations { "Debug", "Release" }
 
+   configurations { 
+      "Debug",
+      "Release"
+   
+   }
+
+   flags {
+      "MultiProcessorCompile"
+   }
+   
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "Brose"
