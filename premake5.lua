@@ -1,5 +1,5 @@
 -- premake5.lua
-workspace "Mathlang"
+workspace "Brose"
    architecture "x64"
 
    configurations { 

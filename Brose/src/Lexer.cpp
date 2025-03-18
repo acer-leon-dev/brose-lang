@@ -3,7 +3,7 @@
 #include "Regex.hpp"
 
 Token::Token()
-:   type { TokenType::INVALID_TOKEN }
+:   type { TokenType::NOT_A_TOKEN }
 {
 
 }
@@ -17,7 +17,7 @@ Token::Token(TokenType type, const std::string& value)
 
 Token::operator bool()
 {
-    return type != TokenType::INVALID_TOKEN && !value.empty();
+    return type != TokenType::NOT_A_TOKEN && !value.empty();
 }
 
 namespace
@@ -25,13 +25,13 @@ namespace
 
 TokenType get_keyword_type(const std::string& token)
 {
-    using KeywordTokenMap = std::unordered_map<std::string, TokenType>; 
-    static const KeywordTokenMap keywords { 
+    using TokenMap = std::unordered_map<std::string, TokenType>; 
+    static const TokenMap keywords { 
         { "mod", TokenType::MOD } 
     };
 
-    KeywordTokenMap::const_iterator res = keywords.find(token);
-    return (res == keywords.end()) ? TokenType::INVALID_TOKEN : res->second;
+    TokenMap::const_iterator res = keywords.find(token);
+    return (res == keywords.end()) ? TokenType::NOT_A_TOKEN : res->second;
 }
 
 TokenType get_operator_type(char op)
@@ -51,7 +51,7 @@ TokenType get_operator_type(char op)
     };
 
     OperatorTokenMap::const_iterator res = operators.find(op);
-    return (res == operators.end()) ? TokenType::INVALID_TOKEN : res->second;
+    return (res == operators.end()) ? TokenType::NOT_A_TOKEN : res->second;
 }
 
 Token match_variable(const std::string& src, std::size_t pos = 0, std::size_t n = std::string::npos)
@@ -131,11 +131,7 @@ Token get_next_token(const std::string& src, std::size_t* p_pos)
     if  (pos >= src.length()) {
         return token;
     }
-
-    // 1. Keywords, Keyworded Functions, Variables
-    // 2. Numbers
-    // 3. Single-line comments
-    // 4. Operators
+    
     if (std::isalpha(lastch))
     {
         if      (token = match_token_keyword(src, pos))         {}
@@ -166,14 +162,80 @@ Token get_next_token(const std::string& src, std::size_t* p_pos)
 
 std::vector<Token> tokenizeSource(const std::string& src)
 {
-    std::vector<Token> tokens_list;
-    for (std::size_t i = 0; i < src.size(); i++)
-    {
-        Token tok = get_next_token(src, &i);
-        if (tok) {
-            tokens_list.push_back(tok);
-        }
-    }
+    // std::vector<Token> tokens;
+    // for (std::size_t i = 0; i < src.size(); i++)
+    // {
+    //     Token tok = get_next_token(src, &i);
+    //     if (tok) {
+    //         tokens_list.push_back(tok);
+    //     }
+    // }
     
-    return tokens_list;
+    // return tokens_list;
+
+    // 1. Keywords, Keyworded Functions, Variables
+    // 2. Numbers
+    // 3. Single-line comments
+    // 4. Operators
+    using enum TokenType;
+    std::vector<Token> tokens;
+
+    for (std::size_t pos = 0; pos < src.size(); pos++)
+    {
+        char lastch = src[pos];
+
+        // Skip leading whitespace
+        while (isspacenn(lastch)) {
+            pos++;
+            lastch = src[pos];
+        }
+
+        std::string match;
+        TokenType type;
+        if (std::isalpha(lastch)) {
+            // * Multi-character/Keyword operators
+            if (match = regex::match_start(R"(\b(mod)\b)", src, pos);
+                !match.empty()) {
+                type = get_keyword_type(match);
+            }
+            // * Generic functions (regular functions with one parameter)
+            else if (match = regex::match_start(R"(sin|cos|tan|floor|ceil)", src, pos);
+                !match.empty()) {
+                type = GENERIC_FUNCTION;
+            }
+            // * Logarithmic function syntax i.e., ln, logN
+            else if (match = regex::match_start(R"(\b(ln|(log((\d*)(\.?)(\d*))))\b)", src, pos);
+                !match.empty()) {
+                type = LOGARITHM_FUNCTION;
+            }
+            // * One-letter variables
+            else if (match = regex::match_start(R"([[:alpha:]])", src, pos);
+                !match.empty()) {
+                type = VARIABLE;
+            }
+        }
+        // * Floating-point numbers
+        else if (isdigitf(lastch)) {
+            match = regex::match_start(R"(\d*\.?\d+|\d+\.?\d*)", src, pos);
+            type = NUMBER;
+        }
+        // * Single-line comments
+        else if (src.substr(pos, 2) == "//") {
+            match = regex::match_start(R"(\/\/[^\n\r]*)", src, pos);
+            type = NOT_A_TOKEN;
+            pos++;
+        }
+        // Single-character operators
+        else {
+            match = regex::match_start(R"(\n|\(|\)|=|\+|\-|\*|\/|\^|\|)", src, pos);
+            type = get_operator_type(match[0]);
+        }
+        
+        if (type != NOT_A_TOKEN) {
+            tokens.emplace_back(type, match);
+        }
+        pos += match.length() - 1;
+    }
+        
+    return tokens;
 } // tokenizeSource

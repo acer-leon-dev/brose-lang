@@ -3,7 +3,7 @@
 
 enum class TokenType : int
 {
-    INVALID_TOKEN = -1,
+    NOT_A_TOKEN = -1,
 
     ENDOFLINE,
     

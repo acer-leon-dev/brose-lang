@@ -1,6 +1,6 @@
 ## Example 1
 ```
-// EXAMPLE1.math
+// EXAMPLE1.brose
 a = 2^3 - floor(3.50)
 b = 0.333 * a(5 - 1.2)
 c = 4 / 3 + .5x
@@ -63,7 +63,7 @@ Tokens:
 
 ## Example 2
 ```
-// EXAMPLE2.math
+// EXAMPLE2.brose
 f = log10.254(x^2)
 p = (3.14159)^2
 m = fp
@@ -115,7 +115,7 @@ Tokens:
 ## Example 3
 
 ```
-// EXAMPLE3.math
+// EXAMPLE3.brose
 A = ceil(.5*x) * 0.2
 a = x * (1 / 3)
 B = sin(A * 66.666)

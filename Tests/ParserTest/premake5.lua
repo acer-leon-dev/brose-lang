@@ -4,7 +4,7 @@ project "ParserTest"
     cppdialect "C++23"
     targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
     objdir ("%{wks.location}/bin/obj/" .. outputdir .. "/%{prj.name}")
-    targetname "mathlexertest"
+    targetname "broseparsertest"
 
     includedirs {
         "%{wks.location}/Brose/include"
