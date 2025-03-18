@@ -90,7 +90,7 @@ bool RunUnitTest(const std::string& input, const std::vector<Token>& expected, b
 int main()
 {;
     RunUnitTest(
-        "// EXAMPLE1.brose\n"
+        "// ex1.brose\n"
         "a = 2^3 - floor(3.50)\n"
         "b = 0.333 * a(5 - 1.2)\n"
         "c = 4 / 3 + .5x\n"
@@ -110,7 +110,7 @@ int main()
     );
 
     RunUnitTest(
-        "// EXAMPLE2.brose\n"
+        "// ex2.brose\n"
         "f = log10(x^2)\n"
         "p = (3.14159)^2\n"
         "m = fp\n"
@@ -128,7 +128,7 @@ int main()
     );
 
     RunUnitTest(
-        "// EXAMPLE3.brose\n"
+        "// ex3.brose\n"
         "A = ceil(.5*x) * 0.2\n"
         "a = x * (1 / 3)\n"
         "B = sin(A * 66.666)\n"

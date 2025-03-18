@@ -28,9 +28,9 @@ Or you can run premake with any other build system.
 
 ## Examples
 
-[EXAMPLE1.brose](docs\Examples\EXAMPLE1.brose)
+[ex1.brose](docs\Examples\ex1.brose)
 ```
-// EXAMPLE1.brose
+// ex1.brose
 a = 2^3 - floor(3.50)
 b = 0.333 * a(5 - 1.2)
 c = 4 / 3 + .5x
@@ -38,9 +38,9 @@ d = c mod 4 - 2
 y = d ^ ( 1/3 ) * b
 ```
 
-[EXAMPLE2.brose](docs\Examples\EXAMPLE2.brose)
+[ex2.brose](docs\Examples\ex2.brose)
 ```
-// EXAMPLE2.brose
+// ex2.brose
 f = log10(x^2)
 p = (3.14159)^2
 m = fp
@@ -48,9 +48,9 @@ c = 54.23/11.96
 y = m + -x / 10 * c
 ```
 
-[EXAMPLE3.brose](docs\Examples\EXAMPLE3.brose)
+[ex3.brose](docs\Examples\ex3.brose)
 ```
-// EXAMPLE3.brose
+// ex3.brose
 A = ceil(.5*x) * 0.2
 a = x * (1 / 3)
 B = sin(A * 66.666)
