@@ -1,8 +1,9 @@
 # Brose
 
-#### *Blue Rose.*
+#### *Blue Rose*
 
-A scripting language with a mathematical syntax that compiles to a C++ object which can be called with an input parameter to return a value that corresponds with the function outlined in the script.
+A scripting language with a mathematical syntax.
+Compiles to a C++ object (an AST) which can be called with an input parameter (x) to return a value (y), just like a mathematical function/algorithm.
 
 ## Setup
 
