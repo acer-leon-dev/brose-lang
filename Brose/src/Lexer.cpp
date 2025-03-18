@@ -30,8 +30,8 @@ std::string Token::typeToString(TokenType type)
         case EOL: return "EOL";
         case VARIABLE: return "VARIABLE";
         case NUMBER: return "NUMBER";
-        case OP_OPEN_PAREN: return "OP_OP_OPEN_PAREN";
-        case OP_CLOSE_PAREN: return "OP_OP_CLOSE_PAREN";
+        case OP_OPEN_PAREN: return "OP_OPEN_PAREN";
+        case OP_CLOSE_PAREN: return "OP_CLOSE_PAREN";
         case OP_ABS: return "OP_ABS";
         case OP_EQUAL: return "OP_EQUAL";
         case OP_PLUS: return "OP_PLUS";
@@ -69,13 +69,14 @@ TokenType get_operator_type(char op)
         { '\n', TokenType::EOL },
         { '(',  TokenType::OP_OPEN_PAREN },
         { ')',  TokenType::OP_CLOSE_PAREN },
+        { '|',  TokenType::OP_ABS },
         { '=',  TokenType::OP_EQUAL },
         { '+',  TokenType::OP_PLUS },
         { '-',  TokenType::OP_MINUS },
         { '*',  TokenType::OP_MULTIPLY },
         { '/',  TokenType::OP_DIVIDE },
         { '^',  TokenType::OP_EXPONENT },
-        { '|',  TokenType::OP_ABS }
+        { '!',  TokenType::OP_FACTORIAL }
     };
 
     OperatorTokenMap::const_iterator res = operators.find(op);
@@ -136,7 +137,7 @@ std::vector<Token> Lexer::tokenize(const std::string& src)
         }
         // Single-character operators
         else {
-            match = regex::match_start(R"(\n|\(|\)|=|\+|\-|\*|\/|\^|\|)", src, pos);
+            match = regex::match_start(R"(\n|\(|\)|=|\+|\-|\*|\/|\^|\||!)", src, pos);
             type = get_operator_type(match[0]);
         }
         
