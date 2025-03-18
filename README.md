@@ -21,7 +21,7 @@ Or use any other build system
 
 ## Examples
 
-### [EXAMPLE1.brose](docs\Examples\EXAMPLE1.brose)
+[EXAMPLE1.brose](docs\Examples\EXAMPLE1.brose)
 ```
 // EXAMPLE1.brose
 a = 2^3 - floor(3.50)
@@ -31,7 +31,7 @@ d = c mod 4 - 2
 y = d ^ ( 1/3 ) * b
 ```
 
-### [EXAMPLE2.brose](docs\Examples\EXAMPLE2.brose)
+[EXAMPLE2.brose](docs\Examples\EXAMPLE2.brose)
 ```
 // EXAMPLE2.brose
 f = log10(x^2)
@@ -41,7 +41,7 @@ c = 54.23/11.96
 y = m + -x / 10 * c
 ```
 
-### [EXAMPLE3.brose](docs\Examples\EXAMPLE3.brose)
+[EXAMPLE3.brose](docs\Examples\EXAMPLE3.brose)
 ```
 // EXAMPLE3.brose
 A = ceil(.5*x) * 0.2
