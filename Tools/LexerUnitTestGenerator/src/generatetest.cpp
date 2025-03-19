@@ -7,14 +7,14 @@ std::string generate_brose_script()
     std::string script;
 }
 
-std::string token_to_string(const Token& token)
+std::string token_to_string(const brose::Token& token)
 {
-    return "{" + Token::typeToString(token.type)  + ", " + token.value + "}";
+    return "{" + brose::Token::typeToString(token.type)  + ", " + token.value + "}";
 }
 
 std::string tokenize_script_and_format_tokens(const std::string& source)
 {
-    std::vector<Token> tokens = Lexer::tokenize(source);
+    std::vector<brose::Token> tokens = brose::Lexer::tokenize(source);
     std::string result;
     for (std::size_t i = 0; i < tokens.size(); i++)
     {

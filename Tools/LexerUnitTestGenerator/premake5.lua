@@ -2,8 +2,8 @@ project "LexerUnitTestGenerator"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++23"
-    targetdir( tools_bin_dir )
-    objdir( tools_obj_dir )
+    targetdir ( "%{wks.location}/bin/" .. outputdir .. "/Tools/%{prj.name}" )
+    objdir ( "%{wks.location}/bin/obj/" .. outputdir .. "/Tools/%{prj.name}" )
     targetname "generate-unit-test-lexer"
 
     pchheader "pch.hpp"

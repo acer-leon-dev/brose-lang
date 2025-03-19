@@ -2,8 +2,8 @@ project "UnitTest-Parser"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++23"
-    targetdir ( unittest_bin_dir )
-    objdir ( unittest_obj_dir )
+    targetdir ( "%{wks.location}/bin/" .. outputdir .. "/UnitTests" )
+    objdir ( "%{wks.location}/bin/obj/" .. outputdir .. "/UnitTests/Lexer" )
     targetname "unit-test-parser"
 
     pchheader "pch.hpp"

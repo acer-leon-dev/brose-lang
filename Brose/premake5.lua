@@ -2,9 +2,8 @@ project "Brose"
     kind "StaticLib"
     language "C++"
     cppdialect "C++23"
-    targetdir( path.join(bin_dir, outputdir, "%{prj.name}") )
-    objdir( path.join(obj_dir, outputdir, "%{prj.name}") )
-
+    targetdir ( "%{wks.location}/bin/" .. outputdir .. "/%{prj.name}" )
+    objdir ( "%{wks.location}/bin/obj/" .. outputdir .. "/%{prj.name}" )
     pchheader "pch.hpp"
     pchsource "pch.cpp"
 
