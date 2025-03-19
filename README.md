@@ -6,7 +6,7 @@ A scripting language with a mathematical syntax.
 Compiles to a object (an AST) which can be called with an input parameter (x) to return a value (y), just like a mathematical function/algorithm.
 
 ## Supported Languages
-brose currently only has support for *C++*.
+Brose, as of now, only has support for C++.
 
 ## Setup
 
