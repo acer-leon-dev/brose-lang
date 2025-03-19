@@ -3,7 +3,7 @@ project "UnitTest-Parser"
     language "C++"
     cppdialect "C++23"
     targetdir ( "%{wks.location}/bin/" .. outputdir .. "/UnitTests" )
-    objdir ( "%{wks.location}/bin/obj/" .. outputdir .. "/UnitTests/Lexer" )
+    objdir ( "%{wks.location}/bin/obj/" .. outputdir .. "/UnitTests/Parser" )
     targetname "unit-test-parser"
 
     pchheader "pch.hpp"
