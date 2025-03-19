@@ -1,0 +1,51 @@
+program                 = { white_space, statement, white_space, "\n", white_space },
+                        [ white_space, statement, white_space, [ "\n" ], white_space ] ;
+    
+white_space             = [ ? white space characters ? ] ;
+
+statement               = assignment ;
+
+assignment              = variable, "=", expression ;
+
+variable                = ? letter ?, [ "_", ? digit ? ];
+
+expression              = [ "(" ], 
+                        ( number 
+                        | variable 
+                        | function_call 
+                        | binary_operation 
+                        | unary_operation ),
+                        [ ")" ];
+
+number                  = ? number ? ;
+
+function_call           = function_name, "(", expression, ")" ;
+
+function_name           = generic_function 
+                        | logarithmic_function ;
+
+generic_function        = ? generic_function_idenifier ? ;
+
+logarithmic_function    =  "ln" 
+                        | ( "log", [ number ] ) ;
+                    
+binary_operation        = ( expression, binary_operator, expression ) 
+                        | independent_expr, independent_expr ;
+
+independent_expr        = parenthesized_expr
+                        | variable 
+                        | function_call ;
+
+unary_operation         = ( "|", expression, "|" ) 
+                        | ( independent_expr, "!" );
+
+parenthesized_expr      = "(", expression, ")" ;
+
+
+binary_operator         = "=" 
+                        | "+" 
+                        | "-" 
+                        | "*" 
+                        | "/" 
+                        | "^" 
+                        | "mod" ;
