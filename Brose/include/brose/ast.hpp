@@ -6,159 +6,115 @@
 namespace brose 
 {
 
+enum class FunctionType
+{
+    log,
+    ln,
+    sin,
+    cos,
+    tan,
+    floor,
+    ceil
+};
+
+enum class UnaryOpType
+{
+    abs,
+    fac
+};
+
+enum class BinaryOpType
+{
+    add,
+    sub,
+    mul,
+    div,
+    exp,
+    mod
+};
+
+/**
+ * 
+ */
 class ExprNode
 {
 public:
     virtual ~ExprNode() = default;
 };
 
+/**
+ * 
+ */
 class VariableExprNode : public ExprNode
 {
 public:
-    VariableExprNode(
-        const std::string& name)
-    :   name { name }
-    {
-
-    }
+    VariableExprNode(const std::string& name);
 
     std::string name;
 };
 
+/**
+ * 
+ */
 class NumberExprNode : public ExprNode
 {
 public:
-    NumberExprNode(
-        double value)
-    :   value { value }
-    {
-
-    }
-    
+    NumberExprNode(double value);
     double value;
 };
 
+/**
+ * 
+ */
 class AssignmentExprNode : public ExprNode
 {
 public:
-    AssignmentExprNode(
-        std::unique_ptr<VariableExprNode> lhs,
-        std::unique_ptr<ExprNode> rhs)
-    :   lhs { std::move(lhs) },
-        rhs { std::move(rhs) }
-    {
-
-    }
+    AssignmentExprNode(std::unique_ptr<VariableExprNode> lhs, std::unique_ptr<ExprNode> rhs);
 
     std::unique_ptr<VariableExprNode> lhs;
     std::unique_ptr<ExprNode> rhs;
 };
 
-class UnaryFunctionExprNode : public ExprNode
-{
-public:
-    UnaryFunctionExprNode(
-        const std::string& name,
-        unary_function func)
-    :   name { name },
-        func { func }
-    {
-
-    }
-    
-    std::string name;
-    unary_function func;
-};
-
-class CallExprNode : public ExprNode
-{
-public:
-    CallExprNode(
-        std::unique_ptr<UnaryFunctionExprNode> function)
-    :   function { std::move(function) }
-    {
-
-    }
-
-    std::unique_ptr<UnaryFunctionExprNode> function;
-};
-
 /**
- * Node for binary operations
- * e.g., (1 + 2), (x mod 3)
+ * 
  */
-class BinaryExprNode : public ExprNode
+class FunctionCallExprNode : public ExprNode
 {
 public:
-    BinaryExprNode(
-        std::unique_ptr<ExprNode> lhs,
-        std::unique_ptr<ExprNode> rhs)
-    :   lhs { std::move(lhs) },
-        rhs { std::move(rhs) }
-    {
-
-    }
-
-    std::unique_ptr<ExprNode> lhs;
-    std::unique_ptr<ExprNode> rhs;
+    FunctionCallExprNode(FunctionType function, std::vector<std::unique_ptr<ExprNode>> args);
+    
+    FunctionType function;
+    std::vector<std::unique_ptr<ExprNode>> args;
 };
 
 /**
  * Node for unary operations
  * e.g, |-5|, n!
  */
-class UnaryExprNode : public ExprNode
+class UnaryOpExprNode : public ExprNode
 {
 public:
-    std::unique_ptr<ExprNode> expr;
+    UnaryOpExprNode::UnaryOpExprNode(UnaryOpType operation, 
+        std::unique_ptr<ExprNode> operand);
+        
+    UnaryOpType operation;
+    std::unique_ptr<ExprNode> operand;
 };
 
-class AddExprNode : public BinaryExprNode
+/**
+ * Node for binary operations
+ * e.g., (1 + 2), (x mod 3)
+ */
+class BinaryOpExprNode : public ExprNode
 {
 public:
+    BinaryOpExprNode(BinaryOpType operation,
+        std::unique_ptr<ExprNode> leftoperand,
+        std::unique_ptr<ExprNode> rightoperand);
 
-};
-
-class SubExprNode : public BinaryExprNode
-{
-public:
-
-};
-
-class MulExprNode : public BinaryExprNode
-{
-public:
-
-};
-
-class DivExprNode : public BinaryExprNode
-{
-public:
-
-};
-
-class ExpExprNode : public BinaryExprNode
-{
-public:
-
-};
-
-class ModExprNode : public BinaryExprNode
-{
-public:
-
-};
-
-class AbsExprNode : public UnaryExprNode
-{
-public:
-
-};
-
-class FacExprNode : public UnaryExprNode
-{
-public:
-
+    BinaryOpType operation;
+    std::unique_ptr<ExprNode> leftoperand;
+    std::unique_ptr<ExprNode> rightoperand;
 };
 
 }; // namespace brose

@@ -1,30 +1,32 @@
 #include <functional>
+#include <vector>
 
 namespace brose 
 {
 
-using unary_operation = std::function<double(double)>;
-using binary_operation = std::function<double(double, double)>;
-using unary_function = unary_operation;
-using binary_function = binary_operation;
+using unary_operation_type = std::function<double(double)>;
+using binary_operation_type = std::function<double(double, double)>;
+using function_type = std::function<double(std::vector<double>)>;
+using function_type = function_type;
+using binary_function_type = function_type;
 
-const extern binary_operation add;
-const extern binary_operation sub;
-const extern binary_operation mul;
-const extern binary_operation div;
-const extern binary_operation exp;
-const extern binary_operation mod;
+const extern binary_operation_type add;
+const extern binary_operation_type sub;
+const extern binary_operation_type mul;
+const extern binary_operation_type div;
+const extern binary_operation_type exp;
+const extern binary_operation_type mod;
 
-const extern unary_operation abs;
-const extern unary_operation fac;
+const extern unary_operation_type abs;
+const extern unary_operation_type fac;
 
-const extern binary_function log;
+const extern binary_function_type log;
 
-const extern unary_function ln;
-const extern unary_function sin;
-const extern unary_function cos;
-const extern unary_function tan;
-const extern unary_function floor;
-const extern unary_function ceil;
+const extern function_type ln;
+const extern function_type sin;
+const extern function_type cos;
+const extern function_type tan;
+const extern function_type floor;
+const extern function_type ceil;
 
 }; // namespace brose
