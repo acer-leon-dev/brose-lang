@@ -1,25 +1,41 @@
 #pragma once
-#include "PCH.hpp"
+
+#include <string>
+#include <vector>
+
+namespace brose 
+{
 
 enum class TokenType : int
 {
-    NOT_A_TOKEN = 0x0,
-    EOL = 0x1,
-    VARIABLE = 0x2,
-    NUMBER = 0x4,
-    OP_OPEN_PAREN = 0x8,
-    OP_CLOSE_PAREN = 0x10,
-    OP_ABS = 0x20,
-    OP_EQUAL = 0x40,
-    OP_PLUS = 0x80,
-    OP_MINUS = 0x100,
-    OP_MULTIPLY = 0x200,
-    OP_DIVIDE = 0x400,
-    OP_EXPONENT = 0x800,
-    OP_FACTORIAL = 0x1000,
-    OP_MOD = 0x2000,
-    FUNCTION_GENERIC = 0x4000,
-    FUNCTION_LOGARITHM = 0x8000
+    eol                 = 1 << 0,
+    variable            = 1 << 1,
+    number              = 1 << 2,
+
+    op_open_paren       = 1 << 3,
+    op_close_paren      = 1 << 4,
+    op_equal            = 1 << 5,
+    op_plus             = 1 << 6,
+    op_minus            = 1 << 7,
+    op_star             = 1 << 8,
+    op_slash            = 1 << 9,
+    op_caret            = 1 << 10,
+    op_mod              = 1 << 11,
+    op_abs              = 1 << 12,
+    op_factorial        = 1 << 13,
+    
+    function_generic    = 1 << 14,
+    function_logarithm  = 1 << 15,
+    function_trig       = 1 << 16,
+    
+    op_binary       = op_plus | op_minus | op_star | op_slash | op_caret | op_mod,
+    op_unary        = op_abs | op_factorial,
+    op_any          = op_binary | op_unary,
+    function_binary = function_logarithm,
+    function_unary  = function_generic | function_trig,
+    function_any    = function_binary | function_unary,
+    none            = 0,
+    any             = eol | variable | number | op_any | function_any 
 };
 
 struct Token
@@ -30,7 +46,8 @@ struct Token
     Token();
     Token(TokenType type, const std::string& value);
     operator bool();
-    bool operator<=>(const Token &) const = default;
+    bool operator<=>(const Token &) const         
+      = default;
     static std::string typeToString(TokenType t);
 };
 
@@ -42,3 +59,5 @@ public:
 private:
     std::vector<Token> tokens;
 };
+
+}; // namespace brose

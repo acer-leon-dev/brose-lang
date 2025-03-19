@@ -1,6 +1,7 @@
-#include "Regex.hpp"
+#include "pch.hpp"
+#include <brose/regex.hpp>
 
-namespace regex
+namespace brose::regex
 {
 
 std::string match_start(
@@ -21,4 +22,4 @@ std::string match_start(
     return "";
 }
 
-};
+}; // namespace brose::regex

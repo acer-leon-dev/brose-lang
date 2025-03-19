@@ -1,7 +1,10 @@
 #pragma once
 
-#include "../PCH.hpp"
+#include "pch.hpp"
 
+namespace brose
+{
+    
 struct Script
 {
 private:
@@ -12,3 +15,5 @@ public:
 };
 
 Script compileSource(std::string source);
+
+}; // namespace brose
