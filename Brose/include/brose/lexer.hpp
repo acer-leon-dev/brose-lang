@@ -5,59 +5,55 @@
 
 namespace brose 
 {
-
-enum class TokenType : int
+enum TokenType : int
 {
-    eol                 = 1 << 0,
-    variable            = 1 << 1,
-    number              = 1 << 2,
+    TT_EOL         = 0,
+    TT_Variable    = 1 << 1,
+    TT_Number      = 1 << 2,
 
-    op_open_paren       = 1 << 3,
-    op_close_paren      = 1 << 4,
-    op_equal            = 1 << 5,
-    op_plus             = 1 << 6,
-    op_minus            = 1 << 7,
-    op_star             = 1 << 8,
-    op_slash            = 1 << 9,
-    op_caret            = 1 << 10,
-    op_mod              = 1 << 11,
-    op_abs              = 1 << 12,
-    op_factorial        = 1 << 13,
+    TT_OpenParen   = 1 << 3,
+    TT_CloseParen  = 1 << 4,
     
-    function_generic    = 1 << 14,
-    function_logarithm  = 1 << 15,
-    function_trig       = 1 << 16,
+    TT_Assign   = 1 << 5,
+    TT_Plus    = 1 << 6,
+    TT_Minus   = 1 << 7,
+    TT_Multiply    = 1 << 8,
+    TT_Divide   = 1 << 9,
+    TT_Exponent   = 1 << 10,
+    TT_Modulus     = 1 << 11,
+
+    TT_Absolute = 1 << 12,
+    TT_Factorial   = 1 << 13,
     
-    op_binary       = op_plus | op_minus | op_star | op_slash | op_caret | op_mod,
-    op_unary        = op_abs | op_factorial,
-    op_any          = op_binary | op_unary,
-    function_binary = function_logarithm,
-    function_unary  = function_generic | function_trig,
-    function_any    = function_binary | function_unary,
-    none            = 0,
-    any             = eol | variable | number | op_any | function_any 
+    TT_NormalFunction             = 1 << 14,
+    TT_LogarithmicFunction  = 1 << 15,
+    TT_TrigonometricFunction      = 1 << 16,
+    
+    TT_Parenthesis  = TT_OpenParen | TT_CloseParen,
+    TT_BinaryOperator       = TT_Plus | TT_Minus | TT_Multiply | TT_Divide | TT_Exponent | TT_Modulus,
+    TT_UnaryOperator        = TT_Absolute | TT_Factorial,
+    TT_AnyOperator          = TT_BinaryOperator | TT_UnaryOperator | TT_Parenthesis,
+
+    TT_BinaryFunction  = TT_LogarithmicFunction,
+    TT_UnaryFunction   = TT_NormalFunction | TT_TrigonometricFunction,
+    TT_AnyFunction     = TT_BinaryFunction | TT_UnaryFunction,
+    
+    TT_None            = 0,
+    TT_Any             = TT_EOL | TT_Variable | TT_Number | TT_Parenthesis | TT_AnyOperator | TT_AnyFunction 
 };
 
 struct Token
 {
-    TokenType type;
-    std::string value;
-
-    Token();
-    Token(TokenType type, const std::string& value);
+    TokenType type = TT_None;
+    std::string value = "";
+    
     operator bool();
-    bool operator<=>(const Token &) const         
-      = default;
-    static std::string typeToString(TokenType t);
+
+    bool operator==(const Token& other) const = default; 
 };
 
-class Lexer
-{
-public:
-    static std::vector<Token> tokenize(const std::string& src); 
-    const std::vector<Token>& getTokens();
-private:
-    std::vector<Token> tokens;
-};
+std::string token_type_to_string(TokenType t);
+
+std::vector<Token> lex(const std::string& src); 
 
 }; // namespace brose

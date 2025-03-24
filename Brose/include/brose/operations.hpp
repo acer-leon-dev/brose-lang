@@ -1,32 +1,29 @@
-#include <functional>
 #include <vector>
 
-namespace brose 
+namespace brose::operations
 {
 
-using unary_operation_type = std::function<double(double)>;
-using binary_operation_type = std::function<double(double, double)>;
-using function_type = std::function<double(std::vector<double>)>;
-using function_type = function_type;
-using binary_function_type = function_type;
+using unary = double(*)(double);
+using binary = double(*)(double, double);
+using function = double(*)(const std::vector<double>&);
 
-const extern binary_operation_type add;
-const extern binary_operation_type sub;
-const extern binary_operation_type mul;
-const extern binary_operation_type div;
-const extern binary_operation_type exp;
-const extern binary_operation_type mod;
+double add(double a, double b);
+double sub(double a, double b);
+double mul(double a, double b);
+double div(double a, double b);
+double exp(double a, double b);
+double mod(double a, double b);
 
-const extern unary_operation_type abs;
-const extern unary_operation_type fac;
+double abs(double x);
+double fac(double x);
 
-const extern binary_function_type log;
+double log(const std::vector<double>& x);
 
-const extern function_type ln;
-const extern function_type sin;
-const extern function_type cos;
-const extern function_type tan;
-const extern function_type floor;
-const extern function_type ceil;
+double ln(const std::vector<double>& x);
+double sin(const std::vector<double>& x);
+double cos(const std::vector<double>& x);
+double tan(const std::vector<double>& x);
+double floor(const std::vector<double>& x);
+double ceil(const std::vector<double>& x);
 
-}; // namespace brose
+}; // namespace brose::operations

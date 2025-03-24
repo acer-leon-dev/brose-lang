@@ -10,8 +10,17 @@ std::string match_start(
     const std::string& regex,
     const std::string& src,
     std::size_t pos = 0z,
-    std::size_t n = std::string::npos);
-    
+    std::size_t n = std::string::npos
+);
+
+std::size_t match_start(
+    std::string& dest,
+    const std::string& regex,
+    const std::string& src,
+    std::size_t pos,
+    std::size_t n
+);
+
 template<typename Iterator>
 std::string join_strings_or(Iterator begin, Iterator end)
 {

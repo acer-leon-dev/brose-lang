@@ -24,7 +24,7 @@ function_call           = function_name, "(", expression, ")" ;
 function_name           = generic_function 
                         | logarithmic_function ;
 
-generic_function        = ? generic_function_idenifier ? ;
+generic_function        = ? generic_function_identifier ? ;
 
 logarithmic_function    =  "ln" 
                         | ( "log", [ number ] ) ;

@@ -16,7 +16,7 @@ brose_include_dir = path.join("%{wks.location}", "brose", "include")
 
 outputdir = string.lower("%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}")
 
-include "brose"
+include "Brose"
 
 group "Tests"
    include "Tests/Unit/Lexer"

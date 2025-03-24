@@ -1,37 +1,13 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <brose/operations.hpp>
+#include <vector>
+
 
 namespace brose 
 {
 
-enum class FunctionType
-{
-    log,
-    ln,
-    sin,
-    cos,
-    tan,
-    floor,
-    ceil
-};
-
-enum class UnaryOpType
-{
-    abs,
-    fac
-};
-
-enum class BinaryOpType
-{
-    add,
-    sub,
-    mul,
-    div,
-    exp,
-    mod
-};
+enum class TokenType;
 
 /**
  * 
@@ -81,9 +57,9 @@ public:
 class FunctionCallExprNode : public ExprNode
 {
 public:
-    FunctionCallExprNode(FunctionType function, std::vector<std::unique_ptr<ExprNode>> args);
+    FunctionCallExprNode(const std::string& name, std::vector<std::unique_ptr<ExprNode>> args);
     
-    FunctionType function;
+    std::string name;
     std::vector<std::unique_ptr<ExprNode>> args;
 };
 
@@ -94,10 +70,9 @@ public:
 class UnaryOpExprNode : public ExprNode
 {
 public:
-    UnaryOpExprNode::UnaryOpExprNode(UnaryOpType operation, 
-        std::unique_ptr<ExprNode> operand);
+    UnaryOpExprNode(TokenType op, std::unique_ptr<ExprNode> operand);
         
-    UnaryOpType operation;
+    TokenType op;
     std::unique_ptr<ExprNode> operand;
 };
 
@@ -105,16 +80,16 @@ public:
  * Node for binary operations
  * e.g., (1 + 2), (x mod 3)
  */
-class BinaryOpExprNode : public ExprNode
+class BinaryExprNode : public ExprNode
 {
 public:
-    BinaryOpExprNode(BinaryOpType operation,
-        std::unique_ptr<ExprNode> leftoperand,
-        std::unique_ptr<ExprNode> rightoperand);
-
-    BinaryOpType operation;
-    std::unique_ptr<ExprNode> leftoperand;
-    std::unique_ptr<ExprNode> rightoperand;
+    BinaryExprNode(TokenType op,
+        std::unique_ptr<ExprNode> lhs,
+        std::unique_ptr<ExprNode> rhs);
+        
+    TokenType op;
+    std::unique_ptr<ExprNode> lhs;
+    std::unique_ptr<ExprNode> rhs;
 };
 
 }; // namespace brose

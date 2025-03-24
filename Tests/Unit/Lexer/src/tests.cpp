@@ -39,7 +39,7 @@ std::string decontrol(std::string str)
     
 std::string token_to_string(const brose::Token& token)
 {
-    return "{" + token.value + ", " + brose::Token::typeToString(token.type) + "}";
+    return "{" + token.value + ", " + brose::token_type_to_string(token.type) + "}";
 }
 
 std::string token_vector_to_string(const std::vector<brose::Token>& vector) 
@@ -60,7 +60,7 @@ inline std::size_t total_tests = 0;
 bool RunUnitTest(const std::string& input, const std::vector<brose::Token>& expected, bool log = true)
 {
     total_tests++;
-    std::vector<brose::Token> actual = brose::Lexer::tokenize(input);
+    std::vector<brose::Token> actual = brose::lex(input);
     bool passed = actual == expected;
 
     if (!log)
@@ -100,15 +100,15 @@ int main()
         "d = c mod 4 - 2\n"
         "y = d ^ ( 1/3 ) * b",
         {
-            { variable, "a" }, { op_equal, "=" }, { number, "2" }, { op_caret, "^" }, { number, "3" }, { op_minus, "-" },
-            { function_generic, "floor" }, { op_open_paren, "(" }, { number, "3.50" }, { op_close_paren, ")" }, { eol, "\n" }, { variable, "b" },
-            { op_equal, "=" }, { number, "0.333" }, { op_star, "*" }, { variable, "a" }, { op_open_paren, "(" }, { number, "5" },
-            { op_minus, "-" }, { number, "1.2" }, { op_close_paren, ")" }, { eol, "\n" }, { variable, "c" }, { op_equal, "=" },
-            { number, "4" }, { op_slash, "/" }, { number, "3" }, { op_plus, "+" }, { number, ".5" }, { variable, "x" },
-            { eol, "\n" }, { variable, "d" }, { op_equal, "=" }, { variable, "c" }, { op_mod, "mod" }, { number, "4" },
-            { op_minus, "-" }, { number, "2" }, { eol, "\n" }, { variable, "y" }, { op_equal, "=" }, { variable, "d" },
-            { op_caret, "^" }, { op_open_paren, "(" }, { number, "1" }, { op_slash, "/" }, { number, "3" }, { op_close_paren, ")" },
-            { op_star, "*" }, { variable, "b" }
+            { TT_Variable, "a" }, { TT_Assign, "=" }, { TT_Number, "2" }, { TT_Exponent, "^" }, { TT_Number, "3" }, { TT_Minus, "-" },
+            { TT_NormalFunction, "floor" }, { TT_OpenParen, "(" }, { TT_Number, "3.50" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "b" },
+            { TT_Assign, "=" }, { TT_Number, "0.333" }, { TT_Multiply, "*" }, { TT_Variable, "a" }, { TT_OpenParen, "(" }, { TT_Number, "5" },
+            { TT_Minus, "-" }, { TT_Number, "1.2" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "c" }, { TT_Assign, "=" },
+            { TT_Number, "4" }, { TT_Divide, "/" }, { TT_Number, "3" }, { TT_Plus, "+" }, { TT_Number, ".5" }, { TT_Variable, "x" },
+            { TT_EOL, "\n" }, { TT_Variable, "d" }, { TT_Assign, "=" }, { TT_Variable, "c" }, { TT_Modulus, "mod" }, { TT_Number, "4" },
+            { TT_Minus, "-" }, { TT_Number, "2" }, { TT_EOL, "\n" }, { TT_Variable, "y" }, { TT_Assign, "=" }, { TT_Variable, "d" },
+            { TT_Exponent, "^" }, { TT_OpenParen, "(" }, { TT_Number, "1" }, { TT_Divide, "/" }, { TT_Number, "3" }, { TT_CloseParen, ")" },
+            { TT_Multiply, "*" }, { TT_Variable, "b" }
         }
     );
 
@@ -120,13 +120,13 @@ int main()
         "c = 54.23/11.96\n"
         "y = m + -x / 10 * c",
         {
-            { variable, "f" }, { op_equal, "=" }, { function_logarithm, "log10" }, { op_open_paren, "(" }, { variable, "x" }, { op_caret, "^" },
-            { number, "2" }, { op_close_paren, ")" }, { eol, "\n" }, { variable, "p" }, { op_equal, "=" }, { op_open_paren, "(" },
-            { number, "3.14159" }, { op_close_paren, ")" }, { op_caret, "^" }, { number, "2" }, { eol, "\n" }, { variable, "m" },
-            { op_equal, "=" }, { variable, "f" }, { variable, "p" }, { eol, "\n" }, { variable, "c" }, { op_equal, "=" },
-            { number, "54.23" }, { op_slash, "/" }, { number, "11.96" }, { eol, "\n" }, { variable, "y" }, { op_equal, "=" },
-            { variable, "m" }, { op_plus, "+" }, { op_minus, "-" }, { variable, "x" }, { op_slash, "/" }, { number, "10" },
-            { op_star, "*" }, { variable, "c" }
+            { TT_Variable, "f" }, { TT_Assign, "=" }, { TT_LogarithmicFunction, "log10" }, { TT_OpenParen, "(" }, { TT_Variable, "x" }, { TT_Exponent, "^" },
+            { TT_Number, "2" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "p" }, { TT_Assign, "=" }, { TT_OpenParen, "(" },
+            { TT_Number, "3.14159" }, { TT_CloseParen, ")" }, { TT_Exponent, "^" }, { TT_Number, "2" }, { TT_EOL, "\n" }, { TT_Variable, "m" },
+            { TT_Assign, "=" }, { TT_Variable, "f" }, { TT_Variable, "p" }, { TT_EOL, "\n" }, { TT_Variable, "c" }, { TT_Assign, "=" },
+            { TT_Number, "54.23" }, { TT_Divide, "/" }, { TT_Number, "11.96" }, { TT_EOL, "\n" }, { TT_Variable, "y" }, { TT_Assign, "=" },
+            { TT_Variable, "m" }, { TT_Plus, "+" }, { TT_Minus, "-" }, { TT_Variable, "x" }, { TT_Divide, "/" }, { TT_Number, "10" },
+            { TT_Multiply, "*" }, { TT_Variable, "c" }
         }
     );
 
@@ -138,13 +138,13 @@ int main()
         "b = aB\n"
         "y = b",
         {
-            { variable, "A" }, { op_equal, "=" }, { function_generic, "ceil" }, { op_open_paren, "(" }, { number, ".5" }, { op_star, "*" },
-            { variable, "x" }, { op_close_paren, ")" }, { op_star, "*" }, { number, "0.2" }, { eol, "\n" }, { variable, "a" },
-            { op_equal, "=" }, { variable, "x" }, { op_star, "*" }, { op_open_paren, "(" }, { number, "1" }, { op_slash, "/" },
-            { number, "3" }, { op_close_paren, ")" }, { eol, "\n" }, { variable, "B" }, { op_equal, "=" }, { function_generic, "sin" },
-            { op_open_paren, "(" }, { variable, "A" }, { op_star, "*" }, { number, "66.666" }, { op_close_paren, ")" }, { eol, "\n" },
-            { variable, "b" }, { op_equal, "=" }, { variable, "a" }, { variable, "B" }, { eol, "\n" }, { variable, "y" },
-            { op_equal, "=" }, { variable, "b" }
+            { TT_Variable, "A" }, { TT_Assign, "=" }, { TT_NormalFunction, "ceil" }, { TT_OpenParen, "(" }, { TT_Number, ".5" }, { TT_Multiply, "*" },
+            { TT_Variable, "x" }, { TT_CloseParen, ")" }, { TT_Multiply, "*" }, { TT_Number, "0.2" }, { TT_EOL, "\n" }, { TT_Variable, "a" },
+            { TT_Assign, "=" }, { TT_Variable, "x" }, { TT_Multiply, "*" }, { TT_OpenParen, "(" }, { TT_Number, "1" }, { TT_Divide, "/" },
+            { TT_Number, "3" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "B" }, { TT_Assign, "=" }, { TT_NormalFunction, "sin" },
+            { TT_OpenParen, "(" }, { TT_Variable, "A" }, { TT_Multiply, "*" }, { TT_Number, "66.666" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" },
+            { TT_Variable, "b" }, { TT_Assign, "=" }, { TT_Variable, "a" }, { TT_Variable, "B" }, { TT_EOL, "\n" }, { TT_Variable, "y" },
+            { TT_Assign, "=" }, { TT_Variable, "b" }
         }
     );
 

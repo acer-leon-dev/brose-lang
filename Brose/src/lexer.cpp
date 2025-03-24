@@ -1,168 +1,145 @@
 #include "pch.hpp"
-#include <brose/lexer.hpp>
+#include <brose/Lexer.hpp>
 #include <brose/ctype.hpp>
-#include <brose/regex.hpp>
 
-namespace brose
-{
-
-Token::Token()
-:   type { TokenType::none }
-{
-
-}
-
-Token::Token(TokenType type, const std::string& value)
-:   type { type },
-    value { value }
-{
-
-}
-
-Token::operator bool()
-{
-    return static_cast<bool>(type) && !value.empty();
-}
-
-std::string Token::typeToString(TokenType type)
-{
-    using enum TokenType;
-    
-    switch (type) {
-        case eol: return "eol"; 
-        case variable: return "variable"; 
-        case number: return "number"; 
-        case op_open_paren: return "op_open_paren"; 
-        case op_close_paren: return "op_close_paren"; 
-        case op_equal: return "op_equal"; 
-        case op_plus: return "op_plus"; 
-        case op_minus: return "op_minus"; 
-        case op_star: return "op_star"; 
-        case op_slash: return "op_slash"; 
-        case op_caret: return "op_caret"; 
-        case op_mod: return "op_mod"; 
-        case op_abs: return "op_abs"; 
-        case op_factorial: return "op_factorial"; 
-        case function_generic: return "function_generic"; 
-        case function_logarithm: return "function_logarithm"; 
-        case function_trig: return "function_trig"; 
-        case op_binary: return "op_binary"; 
-        case op_unary: return "op_unary"; 
-        case op_any: return "op_any"; 
-        // case function_binary: return "function_binary"; 
-        case function_unary: return "function_unary"; 
-        case function_any: return "function_any"; 
-        case none: return "none"; 
-        case any: return "any";
-    }   
-
-    return "";
-}
+using namespace brose;
 
 namespace
-{
+{    
 
-TokenType get_keyword_type(const std::string& token)
-{
-    using TokenMap = std::unordered_map<std::string, TokenType>; 
-    static const TokenMap keywords { 
-        { "mod", TokenType::op_mod } 
+TokenType get_operator(const std::string& token) {
+    static const std::unordered_map<std::string, TokenType> keywords { 
+        { "\n", TT_EOL },
+        { "(",  TT_OpenParen },
+        { ")",  TT_CloseParen },
+        { "|",  TT_Absolute, },
+        { "=",  TT_Assign },
+        { "+",  TT_Plus },
+        { "-",  TT_Minus },
+        { "*",  TT_Multiply },
+        { "/",  TT_Divide },
+        { "^",  TT_Exponent },
+        { "!",  TT_Factorial },
+        { "mod", TT_Modulus }    
     };
 
-    TokenMap::const_iterator res = keywords.find(token);
-    return (res == keywords.end()) ? TokenType::none : res->second;
+    auto it = keywords.find(token);
+    return (it == keywords.end()) ? TT_None : it->second;
+
 }
 
-TokenType get_operator_type(char op)
-{
-    using OperatorTokenMap = std::unordered_map<char, TokenType>;
-    static const OperatorTokenMap operators {
-        { '\n', TokenType::eol },
-        { '(',  TokenType::op_open_paren },
-        { ')',  TokenType::op_close_paren },
-        { '|',  TokenType::op_abs, },
-        { '=',  TokenType::op_equal },
-        { '+',  TokenType::op_plus },
-        { '-',  TokenType::op_minus },
-        { '*',  TokenType::op_star },
-        { '/',  TokenType::op_slash},
-        { '^',  TokenType::op_caret},
-        { '!',  TokenType::op_factorial }
-    };
+const boost::regex END_OF_LINE_PATTERN          { R"(\n)" };
+const boost::regex SINGLE_LINE_COMMENT_PATTERN  { R"(\/\/[^\n\r]*)" };
+const boost::regex OPERATOR_PATTERN             { R"(\(|\)|=|\+|\-|\*|\/|\^|\||!|mod)" };
+const boost::regex NORMAL_FUNCTION_PATTERN      { R"(sin|cos|tan|ln|floor|ceil)" };
+const boost::regex LOGARITHM_PATTERN            { R"(log\d*\.?\d*)" };
+const boost::regex VARIABLE_PATTERN             { R"([[:alpha:]](_\d)?)" };
+const boost::regex NUMBER_PATTERN               { R"(\d*\.?\d+|\d+\.?\d*)" };
 
-    OperatorTokenMap::const_iterator res = operators.find(op);
-    return (res == operators.end()) ? TokenType::none : res->second;
+std::string initialize_lexer_regex_pattern() {
+    static std::vector<std::string> pattern_list {
+        { END_OF_LINE_PATTERN.str() },
+        { SINGLE_LINE_COMMENT_PATTERN.str() },
+        { OPERATOR_PATTERN.str() },
+        { NORMAL_FUNCTION_PATTERN.str() },
+        { LOGARITHM_PATTERN.str() },
+        { VARIABLE_PATTERN.str() },
+        { NUMBER_PATTERN.str() }
+    };
+    for (auto& str : pattern_list) { str = '(' + str + ')'; }
+    return boost::algorithm::join(pattern_list, "|");
+}
+
+bool is_newline(const std::string& str) {
+    return boost::regex_match(str, END_OF_LINE_PATTERN);
+}
+
+bool is_single_line_comment(const std::string& str) {
+    return boost::regex_match(str, SINGLE_LINE_COMMENT_PATTERN);
+}
+
+bool is_operator(const std::string& str) {
+    return boost::regex_match(str, OPERATOR_PATTERN);
+}
+
+bool is_normal_function(const std::string& str) {
+    return boost::regex_match(str, NORMAL_FUNCTION_PATTERN);
+}
+
+bool is_logarithm(const std::string& str) {
+    return boost::regex_match(str, LOGARITHM_PATTERN);
+}
+
+bool is_variable(const std::string& str) {
+    return boost::regex_match(str, VARIABLE_PATTERN);
+}
+
+bool is_number(const std::string& str) {
+    return boost::regex_match(str, NUMBER_PATTERN);
+}
+
+TokenType get_token_type(const std::string& str) {
+    if      (is_newline(str))               return TT_EOL;
+    else if (is_single_line_comment(str))   return TT_None;
+    else if (is_operator(str))              return get_operator(str);
+    else if (is_normal_function(str))       return TT_NormalFunction;
+    else if (is_logarithm(str))             return TT_LogarithmicFunction;
+    else if (is_variable(str))              return TT_Variable;
+    else if (is_number(str))                return TT_Number;
+    else                                    return TT_None;
 }
 
 }; // {anonymous} namespace
 
-std::vector<Token> Lexer::tokenize(const std::string& src)
-{
-    using enum TokenType;
-    std::vector<Token> tokens;
+namespace brose {
 
-    for (std::size_t pos = 0; pos < src.size(); pos++)
-    {
-        char lastch = src[pos];
+Token::operator bool() {
+    return static_cast<bool>(type) && !value.empty();
+}
 
-        // Skip leading whitespace
-        while (isspacenn(lastch)) {
-            pos++;
-            lastch = src[pos];
-        }
+std::string token_type_to_string(TokenType t) {
+    return "";
+}
 
-        std::string match;
-        TokenType type;
-        if (std::isalpha(lastch)) {
-            // * Multi-character/Keyword operators
-            if (match = regex::match_start(R"(\b(mod)\b)", src, pos);
-                !match.empty()) {
-                type = get_keyword_type(match);
-            }
-            // * Generic functions (regular functions with one parameter)
-            else if (match = regex::match_start(R"(sin|cos|tan|floor|ceil)", src, pos);
-                !match.empty()) {
-                type = function_generic;
-            }
-            // * Logarithmic function syntax i.e., ln, logN
-            else if (match = regex::match_start(R"(\b(ln|(log\d*\.?\d*))\b)", src, pos);
-                !match.empty()) {
-                type = function_logarithm;
-            }
-            // * One-letter variables
-            else if (match = regex::match_start(R"([[:alpha:]](_\d)?)", src, pos);
-                !match.empty()) {
-                type = variable;
-            }
+    
+std::vector<Token> lex(const std::string& src) {
+    static const std::string lexer_pattern = initialize_lexer_regex_pattern();
+    const boost::regex pattern { lexer_pattern };
+    static const auto match_flags =  boost::match_not_null;
+    std::vector<std::string> token_values;
+    auto start_it = src.cbegin();
+    while (start_it < src.cend()) {
+        boost::smatch this_match;
+
+        if (boost::regex_search(start_it, src.cend(), this_match, pattern, match_flags | boost::match_continuous)) {
+            token_values.push_back(this_match[0]);
+            start_it += this_match[0].str().size();
         }
-        // * Floating-point numbers
-        else if (isdigitf(lastch)) {
-            match = regex::match_start(R"(\d*\.?\d+|\d+\.?\d*)", src, pos);
-            type = number;
-        }
-        // * Single-line comments
-        else if (src.substr(pos, 2) == "//") {
-            match = regex::match_start(R"(\/\/[^\n\r]*)", src, pos);
-            type = none;
-            pos++;
-        }
-        // Single-character operators
         else {
-            match = regex::match_start(R"(\n|\(|\)|=|\+|\-|\*|\/|\^|\||!)", src, pos);
-            type = get_operator_type(match[0]);
+            std::string::const_iterator next_it;
+
+            if (!boost::regex_search(start_it, src.cend(), this_match, pattern, match_flags)) {
+                next_it = src.end();
+            }
+            else {
+                next_it = start_it + this_match.position();
+            }
+
+            if (auto s = std::string(start_it, next_it); !s.empty()) {
+                token_values.push_back(s);
+                start_it = next_it;
+            }
         }
-        
-        if (static_cast<bool>(type)) {
-            tokens.emplace_back(type, match);
+    }
+
+    std::vector<Token> tokens;
+    for (const auto& token_value : token_values) {
+        TokenType type = get_token_type(token_value);
+        if (type) {
+            tokens.push_back(Token{type, token_value});
         }
-        pos += match.length() - 1;
     }
         
-    return tokens;
-} 
-
-const std::vector<Token>& Lexer::getTokens()
-{
     return tokens;
 }
 
