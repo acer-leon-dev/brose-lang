@@ -7,7 +7,7 @@
 namespace brose 
 {
 
-enum class TokenTypeO;
+enum TokenType;
 
 /**
  * 
@@ -70,9 +70,9 @@ public:
 class UnaryOpExprNode : public ExprNode
 {
 public:
-    UnaryOpExprNode(TokenTypeO op, std::unique_ptr<ExprNode> operand);
+    UnaryOpExprNode(TokenType op, std::unique_ptr<ExprNode> operand);
         
-    TokenTypeO op;
+    TokenType op;
     std::unique_ptr<ExprNode> operand;
 };
 
@@ -83,11 +83,11 @@ public:
 class BinaryExprNode : public ExprNode
 {
 public:
-    BinaryExprNode(TokenTypeO op,
+    BinaryExprNode(TokenType op,
         std::unique_ptr<ExprNode> lhs,
         std::unique_ptr<ExprNode> rhs);
         
-    TokenTypeO op;
+    TokenType op;
     std::unique_ptr<ExprNode> lhs;
     std::unique_ptr<ExprNode> rhs;
 };
