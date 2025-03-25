@@ -20,25 +20,15 @@ operations::function get_binary_function_from_token(const Token& token) {
     throw std::invalid_argument("");
 }
 
-double get_logarithm_base_from_token(const Token& token) {
-    if (token.value.length() == 3) {
-        return 10;
-    }
-    
-    return std::stod(token.value.substr(4));
-}
-
 int get_binop_precedence(const Token& token) {
     static const std::unordered_map<TokenType, int>
     binop_precedence_map = {
-        { token_exponent,   10 }, // E 
-        
-        { token_multiply,   20 }, // M
-        { token_divide,     20 }, // D
-        { token_modulus,    20 },
-
-        { token_plus,       30 }, // A
-        { token_minus,      30 }, // S
+        { token_exponent, 1 }, // E 
+        { token_multiply, 2 }, // M
+        { token_divide,   2 }, // D
+        { token_modulus,  2 },
+        { token_plus,     3 }, // A
+        { token_minus,    3 }, // S
     };
 
     int AnyOperator   = token_open_paren | token_close_paren | token_assign | token_plus 
@@ -126,16 +116,17 @@ std::unique_ptr<ExprNode> parse_argument(TokenVecIt& it) {
 }
 
 std::unique_ptr<ExprNode> parse_function_expr(TokenVecIt& it) {   
-    operations::function function;
     std::vector<std::unique_ptr<ExprNode>> args;
-
+    
+    std::string name = it->value;
     if (it->type & token_normal_function | token_trigonometric_function) {
-        function = get_unary_function_from_token(*it);
+    
     } else if (it->type & token_logarithmic_function) {
         function = get_binary_function_from_token(*it);
 
         if (it->type == token_logarithmic_function) {
-            args.push_back(std::make_unique<NumberExprNode>(get_logarithm_base_from_token(*it)));
+            double base = (it->value.length() == 3) ? 10 : std::stod(it->value.substr(4));
+            args.push_back(std::make_unique<NumberExprNode>(base));
         }
     }
 
