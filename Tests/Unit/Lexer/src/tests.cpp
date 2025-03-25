@@ -1,80 +1,13 @@
 #include "pch.hpp"
 
 #include <brose/lexer.hpp>
-#include <Boost/regex.hpp>
+
+#include "util.hpp"
 
 using enum brose::TokenType;
 
 namespace
 {
-
-std::string decontrol(std::string str)
-{   
-    // static boost::regex r_sqte { R"(\')" };
-    // static boost::regex r_dqte { R"(\")" };
-    // static boost::regex r_ques { R"(\?)" };
-    // static boost::regex r_bsla { R"(\\)" };
-    // static boost::regex r_bell { R"(\a)" };
-    // static boost::regex r_back { R"(\b)" };
-    // static boost::regex r_fmfd { R"(\f)" };
-    // static boost::regex r_vtab { R"(\v)" };
-    static boost::regex r_lnfd { R"(\n)" };
-    static boost::regex r_cret { R"(\r)" };
-    static boost::regex r_htab { R"(\t)" };
-    
-    // str = boost::regex_replace(str, r_sqte, R"(\\')");
-    // str = boost::regex_replace(str, r_dqte, R"(\\")");
-    // str = boost::regex_replace(str, r_ques, R"(\\?)");
-    // str = boost::regex_replace(str, r_bsla, R"(\\\)");
-    // str = boost::regex_replace(str, r_bell, R"(\\a)");
-    // str = boost::regex_replace(str, r_back, R"(\\t)");
-    // str = boost::regex_replace(str, r_fmfd, R"(\\b)");
-    // str = boost::regex_replace(str, r_vtab, R"(\\v)");
-    str = boost::regex_replace(str, r_lnfd, R"(\\n)");
-    str = boost::regex_replace(str, r_cret, R"(\\r)");
-    str = boost::regex_replace(str, r_htab, R"(\\t)");
-
-    return str;
-}
-    
-std::string token_to_string(const brose::Token& token) {
-    return "{" + token.value + ", " + brose::token_type_to_string(token.type) + "}";
-}
-
-std::string token_vector_to_string(const std::vector<brose::Token>& vector) {
-    if (vector.empty()) {
-        return "";
-    }
-
-    std::string str;
-    for (std::size_t i = 0; i < vector.size() - 1; i++) {
-        str += decontrol(vector.at(i).value) + " ";
-    }
-    str += vector.back().value;
-    return str;
-}
-
-inline std::size_t successful_tests = 0;
-inline std::size_t total_tests = 0;
-
-std::string assertTokenVectorsEqual(const std::vector<brose::Token>& actual_output, const std::vector<brose::Token>& expected_output) {
-    total_tests++;
-    std::stringstream sstream;
-    sstream << "!------------------------------------------------!\n";
-    if (actual_output == expected_output) {
-        successful_tests++;
-        sstream << "Test " << total_tests << ": SUCCESS!\n";
-        sstream << "Output:\n\t" << token_vector_to_string(actual_output) << "\n";
-    }
-    else {
-        sstream << "Test " << total_tests << ": FAIL!\n";
-        sstream << "Expected output:\n\t" << token_vector_to_string(expected_output) << "\n";
-        sstream << "Incorrect output:\n\t" << token_vector_to_string(actual_output) << "\n";
-    }
-
-    sstream << "!------------------------------------------------!\n\n";
-    return sstream.str();
-}
 
 void test_lexer_produces_correct_token_sequence_from_script() {
     const std::string script =
@@ -138,7 +71,7 @@ void test_lexer_produces_correct_token_sequence_from_script() {
     };
 
     auto actual_output = brose::lex(script);
-    assertTokenVectorsEqual(actual_output, expected);
+    assertTokenListsAreEqual(actual_output, expected);
 }
 
 };
