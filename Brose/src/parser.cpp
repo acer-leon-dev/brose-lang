@@ -7,13 +7,13 @@
 // using namespace brose;
 
 // // Alias to token vector iterator
-// using vectok_iter = std::vector<Token>::const_iterator; 
+// using TokenVecIt = std::vector<Token>::const_iterator; 
 
 // namespace
 // {
 
 // operations::function get_binary_function_from_token(const Token& token) {
-//     if (token.type == LogarithmicFunction) {
+//     if (token.type == token_logarithmic_function) {
 //         return operations::log;
 //     }
 
@@ -31,17 +31,21 @@
 // int get_binop_precedence(const Token& token) {
 //     static const std::unordered_map<TokenType, int>
 //     binop_precedence_map = {
-//         { Exponent,      10 }, // E 
+//         { token_exponent,   10 }, // E 
         
-//         { Multiply,       20 }, // M
-//         { Divide,      20 }, // D
-//         { Modulusulus,        20 },
+//         { token_multiply,   20 }, // M
+//         { token_divide,     20 }, // D
+//         { token_modulus,    20 },
 
-//         { Plus,       30 }, // A
-//         { Minus,      30 }, // S
+//         { token_plus,       30 }, // A
+//         { token_minus,      30 }, // S
 //     };
 
-//     if (!(static_cast<int>(token.type) & static_cast<int>(AnyOperator))) {
+//     int AnyOperator   = token_open_paren | token_close_paren | token_assign | token_plus 
+//                             | token_minus | token_multiply | token_divide | token_exponent 
+//                             | token_modulus | token_absolute | token_factorial;
+
+//     if (!(token.type & AnyOperator)) {
 //         return -1;
 //     }
 
@@ -102,7 +106,7 @@
 //         return nullptr;
 //     }
 
-//     if (it->type != CloseParen) {
+//     if (it->type != token_CloseParen) {
 //         return log_error("expected ')'");
 //     }
 
@@ -146,7 +150,7 @@
 //         return nullptr;            
 //     }
     
-//     if (it->type != CloseParen) {
+//     if (it->type != token_CloseParen) {
 //         return log_error("Expected ')'");
 //     }
 //     it++; // skip closing paren
@@ -160,7 +164,7 @@
 //             return parse_variable_expr(it);
 //         case Number:
 //             return parse_number_expr(it);
-//         case OpenParen:
+//         case token_OpenParen:
 //             return parse_parenthesized_expr(it);
 //     }
     

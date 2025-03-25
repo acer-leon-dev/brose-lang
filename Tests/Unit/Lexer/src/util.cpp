@@ -41,10 +41,10 @@ std::string tokenlist_to_string(const TokenList& vector) {
     
     std::string str;
     for (int i = 0; i < vector.size() - 1; i++) {
-        str += vector.at(i).value + " ";
+        str += decontrol(vector.at(i).value) + " ";
     }
 
-    return decontrol(str + vector.back().value);
+    return str + decontrol(vector.back().value);
 }
 
 void assertTokenListsAreEqual(const TokenList& actual_output, const TokenList& expected_output) {

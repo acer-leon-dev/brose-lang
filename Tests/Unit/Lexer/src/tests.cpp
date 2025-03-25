@@ -8,65 +8,173 @@ using enum brose::TokenType;
 namespace
 {
 
-void test_lexer_produces_correct_token_sequence_from_script() {
+void testLexerProducesCorrectTokenSequenceFromScript1() {
     const static std::string script =
-    "// ex1.brose\na = 2^3 - floor(3.50)\n"
-    "b = 0.333 * a(5 - 1.2)\n"
-    "c = 4 / 3 + .5x\n"
-    "d = c mod 4 - 2\n"
-    "y = d ^ ( 1/3 ) * b";
+        "// ex1.brose\na = 2^3 - floor(3.50)\n"
+        "b = 0.333 * a(5 - 1.2)\n"
+        "c = 4 / 3 + .5x\n"
+        "d = c mod 4 - 2\n"
+        "y = d ^ ( 1/3 ) * b";
 
     const static std::vector<brose::Token> expected {
-        {"a",     Variable},
-        {"=",     Assign},
-        {"2",     Number},
-        {"^",     Exponent},
-        {"3",     Number},
-        {"-",     Minus},
-        {"floor", NormalFunction},
-        {"(",     OpenParen},
-        {"3.50",  Number},
-        {")",     CloseParen},
-        {"\n",    EOL},
-        {"b",     Variable},
-        {"=",     Assign},
-        {"0.333", Number},
-        {"*",     Multiply},
-        {"a",     Variable},
-        {"(",     OpenParen},
-        {"5",     Number},
-        {"-",     Minus},
-        {"1.2",   Number},
-        {")",     CloseParen},
-        {"\n",    EOL},
-        {"c",     Variable},
-        {"=",     Assign},
-        {"4",     Number},
-        {"/",     Divide},
-        {"3",     Number},
-        {"+",     Plus},
-        {".5",    Number},
-        {"x",     Variable},
-        {"\n",    EOL},
-        {"d",     Variable},
-        {"=",     Assign},
-        {"c",     Variable},
-        {"mod",   Modulus},
-        {"4",     Number},
-        {"-",     Minus},
-        {"2",     Number},
-        {"\n",    EOL},
-        {"y",     Variable},
-        {"=",     Assign},
-        {"d",     Variable},
-        {"^",     Exponent},
-        {"(",     OpenParen},
-        {"1",     Number},
-        {"/",     Divide},
-        {"3",     Number},
-        {")",     CloseParen},
-        {"*",     Multiply},
-        {"b",     Variable}
+        {"a",     token_variable},
+        {"=",     token_assign},
+        {"2",     token_number},
+        {"^",     token_exponent},
+        {"3",     token_number},
+        {"-",     token_minus},
+        {"floor", token_normal_function},
+        {"(",     token_open_paren},
+        {"3.50",  token_number},
+        {")",     token_close_paren},
+        {"\n",    token_eol},
+        {"b",     token_variable},
+        {"=",     token_assign},
+        {"0.333", token_number},
+        {"*",     token_multiply},
+        {"a",     token_variable},
+        {"(",     token_open_paren},
+        {"5",     token_number},
+        {"-",     token_minus},
+        {"1.2",   token_number},
+        {")",     token_close_paren},
+        {"\n",    token_eol},
+        {"c",     token_variable},
+        {"=",     token_assign},
+        {"4",     token_number},
+        {"/",     token_divide},
+        {"3",     token_number},
+        {"+",     token_plus},
+        {".5",    token_number},
+        {"x",     token_variable},
+        {"\n",    token_eol},
+        {"d",     token_variable},
+        {"=",     token_assign},
+        {"c",     token_variable},
+        {"mod",   token_modulus},
+        {"4",     token_number},
+        {"-",     token_minus},
+        {"2",     token_number},
+        {"\n",    token_eol},
+        {"y",     token_variable},
+        {"=",     token_assign},
+        {"d",     token_variable},
+        {"^",     token_exponent},
+        {"(",     token_open_paren},
+        {"1",     token_number},
+        {"/",     token_divide},
+        {"3",     token_number},
+        {")",     token_close_paren},
+        {"*",     token_multiply},
+        {"b",     token_variable}
+    };
+
+    assertTokenListsAreEqual(brose::lex(script), expected);
+}
+
+
+void testLexerProducesCorrectTokenSequenceFromScript2() {
+    const static std::string script = 
+        "// ex2.brose\n"
+        "f = log10(x^2)\n"
+        "p = (3.14159)^2\n"
+        "m = fp\n"
+        "c = 54.23/11.96\n"
+        "y = m + -x / 10 * c";
+
+    const static std::vector<brose::Token> expected {
+        {"f",       token_variable},
+        {"=",       token_assign},
+        {"log10",   token_logarithmic_function},
+        {"(",       token_open_paren},
+        {"x",       token_variable},
+        {"^",       token_exponent},
+        {"2",       token_number},
+        {")",       token_close_paren},
+        {"\n",      token_eol},
+        {"p",       token_variable},
+        {"=",       token_assign},
+        {"(",       token_open_paren},
+        {"3.14159", token_number},
+        {")",       token_close_paren},
+        {"^",       token_exponent},
+        {"2",       token_number},
+        {"\n",      token_eol},
+        {"m",       token_variable},
+        {"=",       token_assign},
+        {"f",       token_variable},
+        {"p",       token_variable},
+        {"\n",      token_eol},
+        {"c",       token_variable},
+        {"=",       token_assign},
+        {"54.23",   token_number},
+        {"/",       token_divide},
+        {"11.96",   token_number},
+        {"\n",      token_eol},
+        {"y",       token_variable},
+        {"=",       token_assign},
+        {"m",       token_variable},
+        {"+",       token_plus},
+        {"-",       token_minus},
+        {"x",       token_variable},
+        {"/",       token_divide},
+        {"10",      token_number},
+        {"*",       token_multiply},
+        {"c",       token_variable}
+    };
+
+    assertTokenListsAreEqual(brose::lex(script), expected);
+}
+
+
+void testLexerProducesCorrectTokenSequenceFromScript3() {
+    const static std::string script = 
+        "// ex3.brose\n"
+        "A = ceil(.5*x) * 0.2\n"
+        "a = x * (1 / 3)\n"
+        "B = sin(A * 66.666)\n"
+        "b = aB\n"
+        "y = b";
+
+    const static std::vector<brose::Token> expected {
+        {"a",       token_variable},
+        {"=",       token_assign},
+        {"ceil",    token_normal_function},
+        {"(",       token_open_paren},
+        {".5",      token_number},
+        {"*",       token_multiply},
+        {"x",       token_variable},
+        {")",       token_close_paren},
+        {"*",       token_multiply},
+        {"0.2",     token_number},
+        {"\n",      token_eol},
+        {"a",       token_variable},
+        {"=",       token_assign},
+        {"x",       token_variable},
+        {"*",       token_multiply},
+        {"(",       token_open_paren},
+        {"1",       token_number},
+        {"/",       token_divide},
+        {"3",       token_number},
+        {")",       token_close_paren},
+        {"\n",      token_eol},
+        {"b",       token_variable},
+        {"=",       token_assign},
+        {"sin",     token_normal_function},
+        {"(",       token_open_paren},
+        {"a",       token_variable},
+        {"*",       token_multiply},
+        {"66.666",  token_number},
+        {")",       token_close_paren},
+        {"\n",      token_eol},
+        {"b",       token_variable},
+        {"=",       token_assign},
+        {"a",       token_variable},
+        {"b",       token_variable},
+        {"\n",      token_eol},
+        {"y",       token_variable},
+        {"=",       token_assign},
+        {"b",       token_variable}
     };
 
     assertTokenListsAreEqual(brose::lex(script), expected);
@@ -76,48 +184,11 @@ void test_lexer_produces_correct_token_sequence_from_script() {
 
 int main()
 {;
-    test_lexer_produces_correct_token_sequence_from_script();
-
-    // test_lexer_produces_correct_token_sequence_from_script(
-    //     "// ex2.brose\nf = log10(x^2)\np = (3.14159)^2\nm = fp\nc = 54.23/11.96\ny = m + -x / 10 * c",
-    //     {
-    //         { "f", Variable }, { "=", Assign }, { "log10", LogarithmicFunction },
-    //         { "(", OpenParen }, { "x", Variable }, { "^", Exponent },
-    //         { "2", Number }, { ")", CloseParen }, { "\n", EOL },
-    //         { "p", Variable }, { "=", Assign }, { "(", OpenParen },
-    //         { "3.14159", Number }, { ")", CloseParen }, { "^", Exponent },
-    //         { "2", Number }, { "\n", EOL }, { "m", Variable },
-    //         { "=", Assign }, { "f", Variable }, { "p", Variable },
-    //         { "\n", EOL }, { "c", Variable }, { "=", Assign },
-    //         { "54.23", Number }, { "/", Divide }, { "11.96", Number },
-    //         { "\n", EOL }, { "y", Variable }, { "=", Assign },
-    //         { "m", Variable }, { "+", Plus }, { "-", Minus },
-    //         { "x", Variable }, { "/", Divide }, { "10", Number },
-    //         { "*", Multiply }, { "c", Variable }
-    //     }
-    // );
-
-    // test_lexer_produces_correct_token_sequence_from_script(
-    //     "// ex3.brose\nA = ceil(.5*x) * 0.2\na = x * (1 / 3)\nB = sin(A * 66.666)\nb = aB\ny = b",
-    //     {
-    //         { "A", Variable }, { "=", Assign }, { "ceil", NormalFunction },
-    //         { "(", OpenParen }, { ".5", Number }, { "*", Multiply },
-    //         { "x", Variable }, { ")", CloseParen }, { "*", Multiply },
-    //         { "0.2", Number }, { "\n", EOL }, { "a", Variable },
-    //         { "=", Assign }, { "x", Variable }, { "*", Multiply },
-    //         { "(", OpenParen }, { "1", Number }, { "/", Divide },
-    //         { "3", Number }, { ")", CloseParen }, { "\n", EOL },
-    //         { "B", Variable }, { "=", Assign }, { "sin", NormalFunction },
-    //         { "(", OpenParen }, { "A", Variable }, { "*", Multiply },
-    //         { "66.666", Number }, { ")", CloseParen }, { "\n", EOL },
-    //         { "b", Variable }, { "=", Assign }, { "a", Variable },
-    //         { "B", Variable }, { "\n", EOL }, { "y", Variable },
-    //         { "=", Assign }, { "b", Variable }
-    //     }
-    // );
+    testLexerProducesCorrectTokenSequenceFromScript1();
+    testLexerProducesCorrectTokenSequenceFromScript2();
+    testLexerProducesCorrectTokenSequenceFromScript3();
 
     std::cout << "!------------------------------------------------!\n";
     std::cout << "# Successful tests: " << successful_tests << "/" << total_tests << " tests\n";
     std::cout << "!------------------------------------------------!\n";
-
 }

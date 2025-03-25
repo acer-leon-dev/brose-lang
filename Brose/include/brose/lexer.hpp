@@ -6,38 +6,38 @@
 namespace brose 
 {
 
-enum class TokenType : int
-{
-    EOL                     = 1 <<  0,
-    Variable                = 1 <<  1,
-    Number                  = 1 <<  2,
-    OpenParen               = 1 <<  3,
-    CloseParen              = 1 <<  4,
-    Assign                  = 1 <<  5,
-    Plus                    = 1 <<  6,
-    Minus                   = 1 <<  7,
-    Multiply                = 1 <<  8,
-    Divide                  = 1 <<  9,
-    Exponent                = 1 << 10,
-    Modulus                 = 1 << 11,
-    Absolute                = 1 << 12,
-    Factorial               = 1 << 13,
-    NormalFunction          = 1 << 14,
-    LogarithmicFunction     = 1 << 15,
-    TrigonometricFunction   = 1 << 16,
+enum TokenType : int {
+    token_eol                       = 1 <<  0,
+    token_variable                  = 1 <<  1,
+    token_number                    = 1 <<  2,
+    token_open_paren                = 1 <<  3,
+    token_close_paren               = 1 <<  4,
+    token_assign                    = 1 <<  5,
+    token_plus                      = 1 <<  6,
+    token_minus                     = 1 <<  7,
+    token_multiply                  = 1 <<  8,
+    token_divide                    = 1 <<  9,
+    token_exponent                  = 1 << 10,
+    token_modulus                   = 1 << 11,
+    token_absolute                  = 1 << 12,
+    token_factorial                 = 1 << 13,
+    token_normal_function           = 1 << 14,
+    token_logarithmic_function      = 1 << 15,
+    token_trigonometric_function    = 1 << 16,
 
-    None    = 0,
-    Any     = EOL | Variable | Number | OpenParen 
-            | CloseParen | Assign | Plus | Minus 
-            | Multiply | Divide | Exponent | Modulus 
-            | Absolute | Factorial | NormalFunction 
-            | LogarithmicFunction | TrigonometricFunction
+    token_none      = 0,
+    token_any       = token_eol | token_variable | token_number 
+                    | token_open_paren | token_close_paren | token_assign 
+                    | token_plus | token_minus | token_multiply 
+                    | token_divide | token_exponent | token_modulus 
+                    | token_absolute | token_factorial | token_normal_function 
+                    | token_logarithmic_function | token_trigonometric_function
 };
 
 struct Token
 {
     std::string value = "";
-    TokenType type = TokenType::None;
+    TokenType type = token_none;
     
     bool valid();
     bool equals(const Token& other);

@@ -29,7 +29,7 @@ FunctionCallExprNode::FunctionCallExprNode(const std::string& name, std::vector<
     
 }
 
-UnaryOpExprNode::UnaryOpExprNode(TokenType op, std::unique_ptr<ExprNode> operand)
+UnaryOpExprNode::UnaryOpExprNode(TokenTypeO op, std::unique_ptr<ExprNode> operand)
 :   op { op },
     operand { std::move(operand) }
 {
@@ -37,7 +37,7 @@ UnaryOpExprNode::UnaryOpExprNode(TokenType op, std::unique_ptr<ExprNode> operand
 }
 
 
-BinaryExprNode::BinaryExprNode(TokenType op, std::unique_ptr<ExprNode> lhs, std::unique_ptr<ExprNode> rhs)
+BinaryExprNode::BinaryExprNode(TokenTypeO op, std::unique_ptr<ExprNode> lhs, std::unique_ptr<ExprNode> rhs)
 :   op { op },
     lhs { std::move(lhs) },
     rhs { std::move(rhs) }
