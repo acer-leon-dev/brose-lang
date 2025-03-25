@@ -13,7 +13,7 @@
 // {
 
 // operations::function get_binary_function_from_token(const Token& token) {
-//     if (token.type == TT_LogarithmicFunction) {
+//     if (token.type == LogarithmicFunction) {
 //         return operations::log;
 //     }
 
@@ -31,17 +31,17 @@
 // int get_binop_precedence(const Token& token) {
 //     static const std::unordered_map<TokenType, int>
 //     binop_precedence_map = {
-//         { TT_Exponent,      10 }, // E 
+//         { Exponent,      10 }, // E 
         
-//         { TT_Multiply,       20 }, // M
-//         { TT_Divide,      20 }, // D
-//         { TT_Modulusulus,        20 },
+//         { Multiply,       20 }, // M
+//         { Divide,      20 }, // D
+//         { Modulusulus,        20 },
 
-//         { TT_Plus,       30 }, // A
-//         { TT_Minus,      30 }, // S
+//         { Plus,       30 }, // A
+//         { Minus,      30 }, // S
 //     };
 
-//     if (!(static_cast<int>(token.type) & static_cast<int>(TT_AnyOperator))) {
+//     if (!(static_cast<int>(token.type) & static_cast<int>(AnyOperator))) {
 //         return -1;
 //     }
 
@@ -102,7 +102,7 @@
 //         return nullptr;
 //     }
 
-//     if (it->type != TT_CloseParen) {
+//     if (it->type != CloseParen) {
 //         return log_error("expected ')'");
 //     }
 
@@ -126,13 +126,13 @@
 //     operations::function function;
 //     std::vector<std::unique_ptr<ExprNode>> args;
 
-//     if (static_cast<int>(it->type) & static_cast<int>(TT_UnaryFunction)) {
+//     if (static_cast<int>(it->type) & static_cast<int>(UnaryFunction)) {
 //         function = get_unary_function_from_token(*it);
 //     }
-//     else if (static_cast<int>(it->type) & static_cast<int>(TT_BinaryFunction)) {
+//     else if (static_cast<int>(it->type) & static_cast<int>(BinaryFunction)) {
 //         function = get_binary_function_from_token(*it);
 
-//         if (it->type == TT_LogarithmicFunction) {
+//         if (it->type == LogarithmicFunction) {
 //             args.push_back(std::make_unique<NumberExprNode>(get_logarithm_base_from_token(*it)));
 //         }
 //     }
@@ -146,7 +146,7 @@
 //         return nullptr;            
 //     }
     
-//     if (it->type != TT_CloseParen) {
+//     if (it->type != CloseParen) {
 //         return log_error("Expected ')'");
 //     }
 //     it++; // skip closing paren
@@ -156,15 +156,15 @@
 
 // std::unique_ptr<ExprNode> parse_primary(vectok_iter& it) {
 //     switch (it->type) {
-//         case TT_Variable:
+//         case Variable:
 //             return parse_variable_expr(it);
-//         case TT_Number:
+//         case Number:
 //             return parse_number_expr(it);
-//         case TT_OpenParen:
+//         case OpenParen:
 //             return parse_parenthesized_expr(it);
 //     }
     
-//     if (static_cast<int>(it->type) & static_cast<int>(TT_AnyFunction)) {
+//     if (static_cast<int>(it->type) & static_cast<int>(AnyFunction)) {
 //         return parse_function_expr(it);
 //     }
 

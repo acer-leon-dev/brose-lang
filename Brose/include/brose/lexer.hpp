@@ -6,54 +6,53 @@
 namespace brose 
 {
 
-enum TokenType : int
+enum class TokenType : int
 {
-    TT_EOL          = 1 << 0,
-    TT_Variable     = 1 << 1,
-    TT_Number       = 1 << 2,
+    EOL          = 1 << 0,
+    Variable     = 1 << 1,
+    Number       = 1 << 2,
 
-    TT_OpenParen    = 1 << 3,
-    TT_CloseParen   = 1 << 4,
+    OpenParen    = 1 << 3,
+    CloseParen   = 1 << 4,
     
-    TT_Assign       = 1 << 5,
-    TT_Plus         = 1 << 6,
-    TT_Minus        = 1 << 7,
-    TT_Multiply     = 1 << 8,
-    TT_Divide       = 1 << 9,
-    TT_Exponent     = 1 << 10,
-    TT_Modulus      = 1 << 11,
+    Assign       = 1 << 5,
+    Plus         = 1 << 6,
+    Minus        = 1 << 7,
+    Multiply     = 1 << 8,
+    Divide       = 1 << 9,
+    Exponent     = 1 << 10,
+    Modulus      = 1 << 11,
 
-    TT_Absolute     = 1 << 12,
-    TT_Factorial    = 1 << 13,
+    Absolute     = 1 << 12,
+    Factorial    = 1 << 13,
     
-    TT_NormalFunction           = 1 << 14,
-    TT_LogarithmicFunction      = 1 << 15,
-    TT_TrigonometricFunction    = 1 << 16,
-    
-    TT_Parenthesis      = TT_OpenParen | TT_CloseParen,
-    TT_BinaryOperator   = TT_Plus | TT_Minus | TT_Multiply | TT_Divide | TT_Exponent | TT_Modulus,
-    TT_UnaryOperator    = TT_Absolute | TT_Factorial,
-    TT_AnyOperator      = TT_BinaryOperator | TT_UnaryOperator | TT_Parenthesis,
+    NormalFunction           = 1 << 14,
+    LogarithmicFunction      = 1 << 15,
+    TrigonometricFunction    = 1 << 16,
 
-    TT_BinaryFunction   = TT_LogarithmicFunction,
-    TT_UnaryFunction    = TT_NormalFunction | TT_TrigonometricFunction,
-    TT_AnyFunction      = TT_BinaryFunction | TT_UnaryFunction,
-    
-    TT_None = 0,
-    TT_Any  = TT_EOL | TT_Variable | TT_Number | TT_Parenthesis | TT_AnyOperator | TT_AnyFunction 
+    None    = 0,
+    Any     = EOL | Variable | Number | OpenParen 
+            | CloseParen | Assign | Plus | Minus 
+            | Multiply | Divide | Exponent | Modulus 
+            | Absolute | Factorial | NormalFunction 
+            | LogarithmicFunction | TrigonometricFunction
 };
 
 struct Token
 {
-    TokenType type = TT_None;
     std::string value = "";
+    TokenType type = TokenType::None;
     
-    operator bool();
-
+    bool valid();
+    bool equals(const Token& other);
     bool operator==(const Token& other) const = default; 
 };
 
-std::string token_type_to_string(TokenType t);
+bool token_type_is_valid(TokenType type);
+
+int token_type_to_int(TokenType type);
+
+std::string token_type_to_string(TokenType type);
 
 std::vector<Token> lex(const std::string& src); 
 

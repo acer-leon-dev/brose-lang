@@ -31,60 +31,62 @@ std::string decontrol(std::string str)
     // str = boost::regex_replace(str, r_fmfd, R"(\\b)");
     // str = boost::regex_replace(str, r_vtab, R"(\\v)");
     str = boost::regex_replace(str, r_lnfd, R"(\\n)");
-    str = boost::regex_replace(str, r_cret, R"(\\n)");
-    str = boost::regex_replace(str, r_htab, R"(\\n)");
+    str = boost::regex_replace(str, r_cret, R"(\\r)");
+    str = boost::regex_replace(str, r_htab, R"(\\t)");
 
     return str;
 }
     
-std::string token_to_string(const brose::Token& token)
-{
+std::string token_to_string(const brose::Token& token) {
     return "{" + token.value + ", " + brose::token_type_to_string(token.type) + "}";
 }
 
-std::string token_vector_to_string(const std::vector<brose::Token>& vector) 
-{
+std::string token_vector_to_string(const std::vector<brose::Token>& vector) {
+    if (vector.empty()) {
+        return "";
+    }
+
     std::string str;
-    // str += "{ ";
     for (std::size_t i = 0; i < vector.size() - 1; i++) {
-        str += decontrol(vector[i].value) + " ";
+        str += decontrol(vector.at(i).value) + " ";
     }
     str += vector.back().value;
-    // str += " }";
     return str;
 }
 
 inline std::size_t successful_tests = 0;
 inline std::size_t total_tests = 0;
 
-bool RunUnitTest(const std::string& input, const std::vector<brose::Token>& expected, bool log = true)
-{
+std::string dump_test_result(bool passed, const std::vector<brose::Token>& actual_output, const std::vector<brose::Token>& expected_output) {
+    std::stringstream sstream;
+
+    sstream << "!------------------------------------------------!\n";
+    if (passed) {
+        successful_tests++;
+        sstream << "Test " << total_tests << ": SUCCESS!\n";
+        sstream << "Output:\n\t" << token_vector_to_string(actual_output) << "\n";
+    }
+    else {
+        sstream << "Test " << total_tests << ": FAIL!\n";
+        sstream << "Expected output:\n\t" << token_vector_to_string(expected_output) << "\n";
+        sstream << "Incorrect output:\n\t" << token_vector_to_string(actual_output) << "\n";
+    }
+
+    sstream << "!------------------------------------------------!\n\n";
+    return sstream.str();
+}
+
+bool test_lexer_produces_correct_token_sequence_from_script(const std::string& input, const std::vector<brose::Token>& expected, bool log = true) {
     total_tests++;
     std::vector<brose::Token> actual = brose::lex(input);
     bool passed = actual == expected;
 
-    if (!log)
-    {
-        if (passed) {
-            successful_tests++;
-        }
-        return passed;
-    }
-    
-    std::cout << "!------------------------------------------------!\n";
-    if (passed) {
+    if (!log && passed) {
         successful_tests++;
-        std::cout << "Test " << total_tests << ": SUCCESS!\n";
-        std::cout << "Output:\n\t" << token_vector_to_string(actual) << "\n";
     }
     else {
-        std::cout << "Test " << total_tests << ": FAIL!\n";
-        std::cout << "Expected output:\n\t" << token_vector_to_string(expected) << "\n";
-        std::cout << "Incorrect output:\n\t" << token_vector_to_string(actual) << "\n";
+        std::cout << dump_test_result(passed, actual, expected);
     }
-
-    std::cout << "!------------------------------------------------!\n";
-    std::cout << "\n";
     return passed;
 }
 
@@ -92,59 +94,64 @@ bool RunUnitTest(const std::string& input, const std::vector<brose::Token>& expe
 
 int main()
 {;
-    RunUnitTest(
-        "// ex1.brose\n"
-        "a = 2^3 - floor(3.50)\n"
-        "b = 0.333 * a(5 - 1.2)\n"
-        "c = 4 / 3 + .5x\n"
-        "d = c mod 4 - 2\n"
-        "y = d ^ ( 1/3 ) * b",
+    test_lexer_produces_correct_token_sequence_from_script(
+        "// ex1.brose\na = 2^3 - floor(3.50)\nb = 0.333 * a(5 - 1.2)\nc = 4 / 3 + .5x\nd = c mod 4 - 2\ny = d ^ ( 1/3 ) * b",
         {
-            { TT_Variable, "a" }, { TT_Assign, "=" }, { TT_Number, "2" }, { TT_Exponent, "^" }, { TT_Number, "3" }, { TT_Minus, "-" },
-            { TT_NormalFunction, "floor" }, { TT_OpenParen, "(" }, { TT_Number, "3.50" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "b" },
-            { TT_Assign, "=" }, { TT_Number, "0.333" }, { TT_Multiply, "*" }, { TT_Variable, "a" }, { TT_OpenParen, "(" }, { TT_Number, "5" },
-            { TT_Minus, "-" }, { TT_Number, "1.2" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "c" }, { TT_Assign, "=" },
-            { TT_Number, "4" }, { TT_Divide, "/" }, { TT_Number, "3" }, { TT_Plus, "+" }, { TT_Number, ".5" }, { TT_Variable, "x" },
-            { TT_EOL, "\n" }, { TT_Variable, "d" }, { TT_Assign, "=" }, { TT_Variable, "c" }, { TT_Modulus, "mod" }, { TT_Number, "4" },
-            { TT_Minus, "-" }, { TT_Number, "2" }, { TT_EOL, "\n" }, { TT_Variable, "y" }, { TT_Assign, "=" }, { TT_Variable, "d" },
-            { TT_Exponent, "^" }, { TT_OpenParen, "(" }, { TT_Number, "1" }, { TT_Divide, "/" }, { TT_Number, "3" }, { TT_CloseParen, ")" },
-            { TT_Multiply, "*" }, { TT_Variable, "b" }
+            { "a", Variable }, { "=", Assign }, { "2", Number },
+            { "^", Exponent }, { "3", Number }, { "-", Minus },
+            { "floor", NormalFunction }, { "(", OpenParen }, { "3.50", Number },
+            { ")", CloseParen }, { "\n", EOL }, { "b", Variable },
+            { "=", Assign }, { "0.333", Number }, { "*", Multiply },
+            { "a", Variable }, { "(", OpenParen }, { "5", Number },
+            { "-", Minus }, { "1.2", Number }, { ")", CloseParen },
+            { "\n", EOL }, { "c", Variable }, { "=", Assign },
+            { "4", Number }, { "/", Divide }, { "3", Number },
+            { "+", Plus }, { ".5", Number }, { "x", Variable },
+            { "\n", EOL }, { "d", Variable }, { "=", Assign },
+            { "c", Variable }, { "mod", Modulus }, { "4", Number },
+            { "-", Minus }, { "2", Number }, { "\n", EOL },
+            { "y", Variable }, { "=", Assign }, { "d", Variable },
+            { "^", Exponent }, { "(", OpenParen }, { "1", Number },
+            { "/", Divide }, { "3", Number }, { ")", CloseParen },
+            { "*", Multiply }, { "b", Variable }
         }
     );
 
-    RunUnitTest(
-        "// ex2.brose\n"
-        "f = log10(x^2)\n"
-        "p = (3.14159)^2\n"
-        "m = fp\n"
-        "c = 54.23/11.96\n"
-        "y = m + -x / 10 * c",
+    test_lexer_produces_correct_token_sequence_from_script(
+        "// ex2.brose\nf = log10(x^2)\np = (3.14159)^2\nm = fp\nc = 54.23/11.96\ny = m + -x / 10 * c",
         {
-            { TT_Variable, "f" }, { TT_Assign, "=" }, { TT_LogarithmicFunction, "log10" }, { TT_OpenParen, "(" }, { TT_Variable, "x" }, { TT_Exponent, "^" },
-            { TT_Number, "2" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "p" }, { TT_Assign, "=" }, { TT_OpenParen, "(" },
-            { TT_Number, "3.14159" }, { TT_CloseParen, ")" }, { TT_Exponent, "^" }, { TT_Number, "2" }, { TT_EOL, "\n" }, { TT_Variable, "m" },
-            { TT_Assign, "=" }, { TT_Variable, "f" }, { TT_Variable, "p" }, { TT_EOL, "\n" }, { TT_Variable, "c" }, { TT_Assign, "=" },
-            { TT_Number, "54.23" }, { TT_Divide, "/" }, { TT_Number, "11.96" }, { TT_EOL, "\n" }, { TT_Variable, "y" }, { TT_Assign, "=" },
-            { TT_Variable, "m" }, { TT_Plus, "+" }, { TT_Minus, "-" }, { TT_Variable, "x" }, { TT_Divide, "/" }, { TT_Number, "10" },
-            { TT_Multiply, "*" }, { TT_Variable, "c" }
+            { "f", Variable }, { "=", Assign }, { "log10", LogarithmicFunction },
+            { "(", OpenParen }, { "x", Variable }, { "^", Exponent },
+            { "2", Number }, { ")", CloseParen }, { "\n", EOL },
+            { "p", Variable }, { "=", Assign }, { "(", OpenParen },
+            { "3.14159", Number }, { ")", CloseParen }, { "^", Exponent },
+            { "2", Number }, { "\n", EOL }, { "m", Variable },
+            { "=", Assign }, { "f", Variable }, { "p", Variable },
+            { "\n", EOL }, { "c", Variable }, { "=", Assign },
+            { "54.23", Number }, { "/", Divide }, { "11.96", Number },
+            { "\n", EOL }, { "y", Variable }, { "=", Assign },
+            { "m", Variable }, { "+", Plus }, { "-", Minus },
+            { "x", Variable }, { "/", Divide }, { "10", Number },
+            { "*", Multiply }, { "c", Variable }
         }
     );
 
-    RunUnitTest(
-        "// ex3.brose\n"
-        "A = ceil(.5*x) * 0.2\n"
-        "a = x * (1 / 3)\n"
-        "B = sin(A * 66.666)\n"
-        "b = aB\n"
-        "y = b",
+    test_lexer_produces_correct_token_sequence_from_script(
+        "// ex3.brose\nA = ceil(.5*x) * 0.2\na = x * (1 / 3)\nB = sin(A * 66.666)\nb = aB\ny = b",
         {
-            { TT_Variable, "A" }, { TT_Assign, "=" }, { TT_NormalFunction, "ceil" }, { TT_OpenParen, "(" }, { TT_Number, ".5" }, { TT_Multiply, "*" },
-            { TT_Variable, "x" }, { TT_CloseParen, ")" }, { TT_Multiply, "*" }, { TT_Number, "0.2" }, { TT_EOL, "\n" }, { TT_Variable, "a" },
-            { TT_Assign, "=" }, { TT_Variable, "x" }, { TT_Multiply, "*" }, { TT_OpenParen, "(" }, { TT_Number, "1" }, { TT_Divide, "/" },
-            { TT_Number, "3" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" }, { TT_Variable, "B" }, { TT_Assign, "=" }, { TT_NormalFunction, "sin" },
-            { TT_OpenParen, "(" }, { TT_Variable, "A" }, { TT_Multiply, "*" }, { TT_Number, "66.666" }, { TT_CloseParen, ")" }, { TT_EOL, "\n" },
-            { TT_Variable, "b" }, { TT_Assign, "=" }, { TT_Variable, "a" }, { TT_Variable, "B" }, { TT_EOL, "\n" }, { TT_Variable, "y" },
-            { TT_Assign, "=" }, { TT_Variable, "b" }
+            { "A", Variable }, { "=", Assign }, { "ceil", NormalFunction },
+            { "(", OpenParen }, { ".5", Number }, { "*", Multiply },
+            { "x", Variable }, { ")", CloseParen }, { "*", Multiply },
+            { "0.2", Number }, { "\n", EOL }, { "a", Variable },
+            { "=", Assign }, { "x", Variable }, { "*", Multiply },
+            { "(", OpenParen }, { "1", Number }, { "/", Divide },
+            { "3", Number }, { ")", CloseParen }, { "\n", EOL },
+            { "B", Variable }, { "=", Assign }, { "sin", NormalFunction },
+            { "(", OpenParen }, { "A", Variable }, { "*", Multiply },
+            { "66.666", Number }, { ")", CloseParen }, { "\n", EOL },
+            { "b", Variable }, { "=", Assign }, { "a", Variable },
+            { "B", Variable }, { "\n", EOL }, { "y", Variable },
+            { "=", Assign }, { "b", Variable }
         }
     );
 

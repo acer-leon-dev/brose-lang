@@ -6,77 +6,92 @@ using namespace brose;
 namespace
 {    
 
+// using regex_handler = std::function<Token(const std::string& regex, const std::string& token)>;
+
+// regex_handler create_default_value_regex_handler(const std::string& value, TokenType token_type) {
+//     return [value, token_type](auto, auto){ return Token{ value, token_type}; };
+// }
+
+// regex_handler create_regex_spitting_regex_handler(TokenType token_type) {
+//     return [token_type](auto regex, auto token) -> Token { 
+//         return { boost::regex_match(regex), token_type};
+//     };
+// }
+
+// static const std::vector<std::tuple<std::string, regex_handler>> regex_to_token_helper_map { 
+//     { R"(\/\/[^\n\r]*\n)", 
+//         create_default_value_regex_handler("", TokenType::None) },
+
+//     { R"(\n)", create_default_value_regex_handler("\n",  TokenType::EOL) },
+//     { R"(\()", create_default_value_regex_handler("(",   TokenType::OpenParen) },
+//     { R"(\))", create_default_value_regex_handler(")",   TokenType::CloseParen) },
+//     { R"(\|)", create_default_value_regex_handler("|",   TokenType::Absolute), },
+//     { R"(=)",  create_default_value_regex_handler("=",   TokenType::Assign) },
+//     { R"(\+)", create_default_value_regex_handler("+",   TokenType::Plus) },
+//     { R"(\-)", create_default_value_regex_handler("-",   TokenType::Minus) },
+//     { R"(\*)", create_default_value_regex_handler("*",   TokenType::Multiply) },
+//     { R"(\/)", create_default_value_regex_handler("/",   TokenType::Divide) },
+//     { R"(\^)", create_default_value_regex_handler("^",   TokenType::Exponent) },
+//     { R"(\!)", create_default_value_regex_handler("!",   TokenType::Factorial) },
+//     { R"(mod)",create_default_value_regex_handler("mod", TokenType::Modulus) },
+
+//     { R"(sin|cos|tan|ln|floor|ceil)", 
+//         create_regex_spitting_regex_handler(TokenType::NormalFunction), },
+//     { R"(log\d*\.?\d*)",              
+//         create_regex_spitting_regex_handler(TokenType::LogarithmicFunction), },
+//     { R"([[:alpha:]](_\d)?)",         
+//         create_regex_spitting_regex_handler(TokenType::Variable), },
+//     { R"(\d*\.?\d+|\d+\.?\d*)",       
+//         create_regex_spitting_regex_handler(TokenType::Number) }
+// };
+
+const boost::regex SINGLE_LINE_COMMENT_PATTERN  { R"(\/\/[^\n\r]*\n)" };
 const boost::regex END_OF_LINE_PATTERN          { R"(\n)" };
-const boost::regex SINGLE_LINE_COMMENT_PATTERN  { R"(\/\/[^\n\r]*)" };
 const boost::regex OPERATOR_PATTERN             { R"(\(|\)|=|\+|\-|\*|\/|\^|\||!|mod)" };
 const boost::regex NORMAL_FUNCTION_PATTERN      { R"(sin|cos|tan|ln|floor|ceil)" };
 const boost::regex LOGARITHM_PATTERN            { R"(log\d*\.?\d*)" };
 const boost::regex VARIABLE_PATTERN             { R"([[:alpha:]](_\d)?)" };
 const boost::regex NUMBER_PATTERN               { R"(\d*\.?\d+|\d+\.?\d*)" };
 
-TokenType operator_str_to_token_type(const std::string& str) {
+TokenType operator_string_to_token_type(const std::string& str) {
+    using enum TokenType;
+    
     static const std::unordered_map<std::string, TokenType> keywords { 
-        { "\n", TT_EOL },
-        { "(",  TT_OpenParen },
-        { ")",  TT_CloseParen },
-        { "|",  TT_Absolute, },
-        { "=",  TT_Assign },
-        { "+",  TT_Plus },
-        { "-",  TT_Minus },
-        { "*",  TT_Multiply },
-        { "/",  TT_Divide },
-        { "^",  TT_Exponent },
-        { "!",  TT_Factorial },
-        { "mod", TT_Modulus }    
+        { "\n", EOL },
+        { "(",  OpenParen },
+        { ")",  CloseParen },
+        { "|",  Absolute, },
+        { "=",  Assign },
+        { "+",  Plus },
+        { "-",  Minus },
+        { "*",  Multiply },
+        { "/",  Divide },
+        { "^",  Exponent },
+        { "!",  Factorial },
+        { "mod", Modulus }    
     };
 
     auto it = keywords.find(str);
-    return (it == keywords.end()) ? TT_None : it->second;
+    return (it == keywords.end()) ? None : it->second;
 }
 
-bool is_newline(const std::string& str) {
-    return boost::regex_match(str, END_OF_LINE_PATTERN);
-}
-
-bool is_single_line_comment(const std::string& str) {
-    return boost::regex_match(str, SINGLE_LINE_COMMENT_PATTERN);
-}
-
-bool is_operator(const std::string& str) {
-    return boost::regex_match(str, OPERATOR_PATTERN);
-}
-
-bool is_normal_function(const std::string& str) {
-    return boost::regex_match(str, NORMAL_FUNCTION_PATTERN);
-}
-
-bool is_logarithm(const std::string& str) {
-    return boost::regex_match(str, LOGARITHM_PATTERN);
-}
-
-bool is_variable(const std::string& str) {
-    return boost::regex_match(str, VARIABLE_PATTERN);
-}
-
-bool is_number(const std::string& str) {
-    return boost::regex_match(str, NUMBER_PATTERN);
-}
-
-TokenType str_to_token_type(const std::string& str) {
-    if      (is_newline(str))               return TT_EOL;
-    else if (is_single_line_comment(str))   return TT_None;
-    else if (is_operator(str))              return operator_str_to_token_type(str);
-    else if (is_normal_function(str))       return TT_NormalFunction;
-    else if (is_logarithm(str))             return TT_LogarithmicFunction;
-    else if (is_variable(str))              return TT_Variable;
-    else if (is_number(str))                return TT_Number;
-    else                                    return TT_None;
+TokenType string_to_token_type(const std::string& str) {
+    using enum TokenType;
+    
+    if      (boost::regex_match(str, SINGLE_LINE_COMMENT_PATTERN))          return None;
+    else if (boost::regex_match(str, END_OF_LINE_PATTERN))                  return EOL;
+    else if (boost::regex_match(str, OPERATOR_PATTERN))                     return operator_string_to_token_type(str);
+    else if (boost::regex_match(str, NORMAL_FUNCTION_PATTERN))              return NormalFunction;
+    else if (boost::regex_match(str, LOGARITHM_PATTERN))                    return LogarithmicFunction;
+    else if (boost::regex_match(str, VARIABLE_PATTERN))                     return Variable;
+    else if (boost::regex_match(str, NUMBER_PATTERN))                       return Number;
+    else                                                                    return None;
 }
 
 std::string initialize_lexer_regex_pattern() {
     static std::vector<std::string> pattern_list {
-        { END_OF_LINE_PATTERN.str() },
         { SINGLE_LINE_COMMENT_PATTERN.str() },
+        { END_OF_LINE_PATTERN.str() },
         { OPERATOR_PATTERN.str() },
         { NORMAL_FUNCTION_PATTERN.str() },
         { LOGARITHM_PATTERN.str() },
@@ -92,12 +107,46 @@ std::string initialize_lexer_regex_pattern() {
 
 namespace brose {
 
-Token::operator bool() {
-    return type && !value.empty();
+bool Token::valid() {
+    return token_type_is_valid(type) && !value.empty();
 }
 
-std::string token_type_to_string(TokenType t) {
-    return "";
+bool Token::equals(const Token& other) {
+    return *this == other;
+}
+
+bool token_type_is_valid(TokenType type) {
+    return token_type_to_int(type) & token_type_to_int(TokenType::Any);
+}
+
+int token_type_to_int(TokenType token_type) {
+    return static_cast<int>(token_type);
+}
+
+std::string token_type_to_string(TokenType token_type) {
+    using enum TokenType;
+
+    switch (token_type) {
+    default: return "none";
+    case Any: return "any";
+    case EOL: return "end_of_line";
+    case Variable: return "variable";
+    case Number: return "number";
+    case OpenParen: return "open_paren";
+    case CloseParen: return "close_paren";
+    case Assign: return "assign";
+    case Plus: return "plus";
+    case Minus: return "minus";
+    case Multiply: return "multiply";
+    case Divide: return "divide";
+    case Exponent: return "exponent";
+    case Modulus: return "modulus";
+    case Absolute: return "absolute";
+    case Factorial: return "factorial";
+    case NormalFunction: return "normal_function";
+    case LogarithmicFunction: return "logarithmic_function";
+    case TrigonometricFunction: return "trigonometric_function";
+    }
 }
 
 std::vector<Token> lex(const std::string& src) {
@@ -111,7 +160,8 @@ std::vector<Token> lex(const std::string& src) {
     while (start_it < src.cend()) {
         boost::smatch this_match;
         std::string token_value;
-        if (boost::regex_search(start_it, src.cend(), this_match, pattern, match_flags | boost::match_continuous)) {
+        bool match_success = boost::regex_search(start_it, src.cend(), this_match, pattern, match_flags | boost::match_continuous);
+        if (match_success) {
             token_value = this_match[0];
             start_it += this_match[0].str().size();
         }
@@ -125,18 +175,19 @@ std::vector<Token> lex(const std::string& src) {
                 next_it = start_it + this_match.position();
             }
 
-            if (token_value = std::string(start_it, next_it); !token_value.empty()) {
-                start_it = next_it;
-            }
-            else {
+            token_value = std::string(start_it, next_it);
+            if (token_value.empty()) {
                 continue;
             }
+            
+            start_it = next_it;
 
-            // Indentify TokenType from value and convert it to a Token object
-            TokenType token_type = str_to_token_type(token_value);
-            if (token_type) {
-                tokens.push_back(Token{token_type, token_value});
-            }
+        }
+
+        // Indentify TokenType from value and convert it to a Token object
+        TokenType token_type = string_to_token_type(token_value);
+        if (token_type_is_valid(token_type)) {
+            tokens.emplace_back(token_value, token_type);
         }
     }
         
