@@ -1,8 +1,7 @@
 #include "pch.hpp"
 
-#include <brose/lexer.hpp>
-
 #include "util.hpp"
+#include <brose/lexer.hpp>
 
 using enum brose::TokenType;
 
@@ -10,68 +9,67 @@ namespace
 {
 
 void test_lexer_produces_correct_token_sequence_from_script() {
-    const std::string script =
+    const static std::string script =
     "// ex1.brose\na = 2^3 - floor(3.50)\n"
     "b = 0.333 * a(5 - 1.2)\n"
     "c = 4 / 3 + .5x\n"
     "d = c mod 4 - 2\n"
     "y = d ^ ( 1/3 ) * b";
 
-    std::vector<brose::Token> expected {
-        {"a", Variable},
-        {"=", Assign},
-        {"2", Number},
-        {"^", Exponent},
-        {"3", Number},
-        {"-", Minus},
+    const static std::vector<brose::Token> expected {
+        {"a",     Variable},
+        {"=",     Assign},
+        {"2",     Number},
+        {"^",     Exponent},
+        {"3",     Number},
+        {"-",     Minus},
         {"floor", NormalFunction},
-        {"(", OpenParen},
-        {"3.50", Number},
-        {")", CloseParen},
-        {"\n", EOL},
-        {"b", Variable},
-        {"=", Assign},
+        {"(",     OpenParen},
+        {"3.50",  Number},
+        {")",     CloseParen},
+        {"\n",    EOL},
+        {"b",     Variable},
+        {"=",     Assign},
         {"0.333", Number},
-        {"*", Multiply},
-        {"a", Variable},
-        {"(", OpenParen},
-        {"5", Number},
-        {"-", Minus},
-        {"1.2", Number},
-        {")", CloseParen},
-        {"\n", EOL},
-        {"c", Variable},
-        {"=", Assign},
-        {"4", Number},
-        {"/", Divide},
-        {"3", Number},
-        {"+", Plus},
-        {".5", Number},
-        {"x", Variable},
-        {"\n", EOL},
-        {"d", Variable},
-        {"=", Assign},
-        {"c", Variable},
-        {"mod", Modulus},
-        {"4", Number},
-        {"-", Minus},
-        {"2", Number},
-        {"\n", EOL},
-        {"y", Variable},
-        {"=", Assign},
-        {"d", Variable},
-        {"^", Exponent},
-        {"(", OpenParen},
-        {"1", Number},
-        {"/", Divide},
-        {"3", Number},
-        {")", CloseParen},
-        {"*", Multiply},
-        {"b", Variable}
+        {"*",     Multiply},
+        {"a",     Variable},
+        {"(",     OpenParen},
+        {"5",     Number},
+        {"-",     Minus},
+        {"1.2",   Number},
+        {")",     CloseParen},
+        {"\n",    EOL},
+        {"c",     Variable},
+        {"=",     Assign},
+        {"4",     Number},
+        {"/",     Divide},
+        {"3",     Number},
+        {"+",     Plus},
+        {".5",    Number},
+        {"x",     Variable},
+        {"\n",    EOL},
+        {"d",     Variable},
+        {"=",     Assign},
+        {"c",     Variable},
+        {"mod",   Modulus},
+        {"4",     Number},
+        {"-",     Minus},
+        {"2",     Number},
+        {"\n",    EOL},
+        {"y",     Variable},
+        {"=",     Assign},
+        {"d",     Variable},
+        {"^",     Exponent},
+        {"(",     OpenParen},
+        {"1",     Number},
+        {"/",     Divide},
+        {"3",     Number},
+        {")",     CloseParen},
+        {"*",     Multiply},
+        {"b",     Variable}
     };
 
-    auto actual_output = brose::lex(script);
-    assertTokenListsAreEqual(actual_output, expected);
+    assertTokenListsAreEqual(brose::lex(script), expected);
 }
 
 };
