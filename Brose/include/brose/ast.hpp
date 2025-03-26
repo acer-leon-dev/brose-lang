@@ -7,7 +7,7 @@
 namespace brose 
 {
 
-enum TokenType;
+enum TokenType : int;
 
 /**
  * 

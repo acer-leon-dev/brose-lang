@@ -40,16 +40,11 @@ struct Token
     TokenType type = token_none;
     
     bool valid();
-    bool equals(const Token& other);
     bool operator==(const Token& other) const = default; 
 };
 
 bool token_type_is_valid(TokenType type);
-
-int token_type_to_int(TokenType type);
-
-std::string token_type_to_string(TokenType type);
-
+std::string token_type_to_string(TokenType token_type);
 std::vector<Token> lex(const std::string& src); 
 
 }; // namespace brose
