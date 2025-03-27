@@ -137,7 +137,7 @@ void testLexerProducesCorrectTokenSequenceFromScript3() {
         "y = b";
 
     const static std::vector<brose::Token> expected {
-        {"a",       token_variable},
+        {"A",       token_variable},
         {"=",       token_assign},
         {"ceil",    token_normal_function},
         {"(",       token_open_paren},
@@ -158,11 +158,11 @@ void testLexerProducesCorrectTokenSequenceFromScript3() {
         {"3",       token_number},
         {")",       token_close_paren},
         {"\n",      token_eol},
-        {"b",       token_variable},
+        {"B",       token_variable},
         {"=",       token_assign},
         {"sin",     token_normal_function},
         {"(",       token_open_paren},
-        {"a",       token_variable},
+        {"A",       token_variable},
         {"*",       token_multiply},
         {"66.666",  token_number},
         {")",       token_close_paren},
@@ -170,7 +170,7 @@ void testLexerProducesCorrectTokenSequenceFromScript3() {
         {"b",       token_variable},
         {"=",       token_assign},
         {"a",       token_variable},
-        {"b",       token_variable},
+        {"B",       token_variable},
         {"\n",      token_eol},
         {"y",       token_variable},
         {"=",       token_assign},
