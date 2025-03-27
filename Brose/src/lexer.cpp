@@ -7,7 +7,7 @@ namespace
 {    
 
 static const std::map<std::string, TokenType> regex_to_token_map { 
-    { R"(\/\/[^\n\r]*\n)", token_none },
+    { R"(\/\/[^\n\r]*\n)", token_flag_none },
     { R"(\n)", token_eol },
     { R"(\()", token_open_paren },
     { R"(\))", token_close_paren },
@@ -53,20 +53,20 @@ TokenType operator_string_to_token_type(const std::string& str) {
     };
 
     auto it = keywords.find(str);
-    return (it == keywords.end()) ? token_none : it->second;
+    return (it == keywords.end()) ? token_flag_none : it->second;
 }
 
 TokenType string_to_token_type(const std::string& str) {
     using enum TokenType;
     
-    if      (boost::regex_match(str, SINGLE_LINE_COMMENT_PATTERN))          return token_none;
+    if      (boost::regex_match(str, SINGLE_LINE_COMMENT_PATTERN))          return token_flag_none;
     else if (boost::regex_match(str, END_OF_LINE_PATTERN))                  return token_eol;
     else if (boost::regex_match(str, OPERATOR_PATTERN))                     return operator_string_to_token_type(str);
     else if (boost::regex_match(str, NORMAL_FUNCTION_PATTERN))              return token_normal_function;
     else if (boost::regex_match(str, LOGARITHM_PATTERN))                    return token_logarithmic_function;
     else if (boost::regex_match(str, VARIABLE_PATTERN))                     return token_variable;
     else if (boost::regex_match(str, NUMBER_PATTERN))                       return token_number;
-    else                                                                    return token_none;
+    else                                                                    return token_flag_none;
 }
 
 std::string initialize_lexer_regex_pattern() {
@@ -89,7 +89,7 @@ std::string initialize_lexer_regex_pattern() {
 namespace brose {
 
 bool Token::valid() {
-    return type & token_any && !value.empty();
+    return type & token_flag_any && !value.empty();
 }
 
 std::string token_type_to_string(TokenType token_type) {
@@ -97,7 +97,7 @@ std::string token_type_to_string(TokenType token_type) {
 
     switch (token_type) {
     default: return "none";
-    case token_any: return "any";
+    case token_flag_any: return "any";
     case token_eol: return "end_of_line";
     case token_variable: return "variable";
     case token_number: return "number";
@@ -152,7 +152,7 @@ std::vector<Token> lex(const std::string& src) {
 
         // Indentify TokenType from value and convert it to a Token object
         TokenType token_type = string_to_token_type(token_value);
-        if (token_type_is_valid(token_type)) {
+        if (token_type == token_flag_none) {
             tokens.emplace_back(token_value, token_type);
         }
     }

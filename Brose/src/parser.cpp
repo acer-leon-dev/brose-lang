@@ -31,12 +31,15 @@ int get_binop_precedence(const Token& token) {
         { token_plus,     30 }, // A
         { token_minus,    30 }, // S
     };
-    static int token_any_operator   = token_open_paren | token_close_paren | token_assign | token_plus 
+
+    static int token_flag_any_operator   = token_open_paren | token_close_paren | token_assign | token_plus 
                             | token_minus | token_multiply | token_divide | token_exponent 
                             | token_modulus | token_absolute | token_factorial;
-    if (token.type & token_any_operator) {
+                            
+    if (token.type & token_flag_any_operator) {
         return binary_operator_precedence_map.at(token.type);
     }
+
     return -1;
 }
 
@@ -115,10 +118,9 @@ expr_node_uptr parse_variable_expr(token_it_ref it) {
 }
 
 expr_node_uptr parse_function_expr(token_it_ref it) { 
-    static int unary_function_flag = token_normal_function | token_trigonometric_function;
-    // static int binary_function_flag = token_logarithmic_function;
-
-    auto node = std::make_unique_for_overwrite<FunctionCallExprNode>();
+    // static int token_flag_unary_function = token_normal_function | token_trigonometric_function;
+    // static int token_flag_binary_function = token_logarithmic_function;
+    auto node = std::make_unique<FunctionCallExprNode>("", std::vector<expr_node_uptr>());
 
     if (it->type & token_logarithmic_function) {
         // Set identifier to generic name
@@ -159,7 +161,6 @@ expr_node_uptr parse_primary(token_it_ref it) {
     int token_function = token_normal_function | token_logarithmic_function | token_trigonometric_function;
     if (it->type & token_function) {
         return parse_function_expr(it);
-        
     }
 
     return log_error(std::format("unknown token \"{}\", expected an expression", it->value));

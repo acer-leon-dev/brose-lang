@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace brose 
-{
+namespace brose {
 
 enum TokenType : int {
     token_eol                       = 1 <<  0,
@@ -25,8 +24,8 @@ enum TokenType : int {
     token_logarithmic_function      = 1 << 15,
     token_trigonometric_function    = 1 << 16,
 
-    token_none      = 0,
-    token_any       = token_eol | token_variable | token_number 
+    token_flag_none      = 0,
+    token_flag_any       = token_eol | token_variable | token_number 
                     | token_open_paren | token_close_paren | token_assign 
                     | token_plus | token_minus | token_multiply 
                     | token_divide | token_exponent | token_modulus 
@@ -34,16 +33,14 @@ enum TokenType : int {
                     | token_logarithmic_function | token_trigonometric_function
 };
 
-struct Token
-{
+struct Token {
     std::string value = "";
-    TokenType type = token_none;
+    TokenType type = token_flag_none;
     
     bool valid();
     bool operator==(const Token& other) const = default; 
 };
 
-bool token_type_is_valid(TokenType type);
 std::string token_type_to_string(TokenType token_type);
 std::vector<Token> lex(const std::string& src); 
 
