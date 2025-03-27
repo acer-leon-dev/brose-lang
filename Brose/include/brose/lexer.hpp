@@ -6,6 +6,7 @@
 namespace brose {
 
 enum TokenType : int {
+    token_none                      = 0,
     token_eol                       = 1 <<  0,
     token_variable                  = 1 <<  1,
     token_number                    = 1 <<  2,
