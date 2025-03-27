@@ -152,7 +152,7 @@ std::vector<Token> lex(const std::string& src) {
 
         // Indentify TokenType from value and convert it to a Token object
         TokenType token_type = string_to_token_type(token_value);
-        if (token_type == token_flag_none) {
+        if (token_type != token_flag_none) {
             tokens.emplace_back(token_value, token_type);
         }
     }
