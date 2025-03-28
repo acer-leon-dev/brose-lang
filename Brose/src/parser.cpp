@@ -89,7 +89,7 @@ expr_node_uptr parse_expression(token_it_ref it) {
 }
 
 expr_node_uptr parse_number_expr(token_it_ref it)  {
-    double num = std::stod(it->value);
+    double num = std::stod(it->val);
     auto result = std::make_unique<NumberExprNode>(num);
     it++; // skip number
     return std::move(result);
@@ -112,7 +112,7 @@ expr_node_uptr parse_paren_expr(token_it_ref it) {
 }
 
 expr_node_uptr parse_variable_expr(token_it_ref it) {
-    std::string name = it->value;
+    std::string name = it->val;
     it++; // skip variable
     return std::make_unique<VariableExprNode>(std::move(name)); 
 }
@@ -127,7 +127,7 @@ expr_node_uptr parse_function_expr(token_it_ref it) {
         node->name = "log";
         
         // Get base argument
-        double base = (it->value.length() == 3) ? 10 : std::stod(it->value.substr(4));
+        double base = (it->val.length() == 3) ? 10 : std::stod(it->val.substr(4));
         node->args.push_back(std::make_unique<NumberExprNode>(base));
     }
     
@@ -163,7 +163,7 @@ expr_node_uptr parse_primary(token_it_ref it) {
         return parse_function_expr(it);
     }
 
-    return log_error(std::format("unknown token \"{}\", expected an expression", it->value));
+    return log_error(std::format("unknown token \"{}\", expected an expression", it->val));
 }
 
 };

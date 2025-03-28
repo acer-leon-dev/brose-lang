@@ -25,8 +25,7 @@ enum TokenType : int {
     token_logarithmic_function      = 1 << 15,
     token_trigonometric_function    = 1 << 16,
 
-    token_flag_none      = 0,
-    token_flag_any       = token_eol | token_variable | token_number 
+    token_any       = token_eol | token_variable | token_number 
                     | token_open_paren | token_close_paren | token_assign 
                     | token_plus | token_minus | token_multiply 
                     | token_divide | token_exponent | token_modulus 
@@ -38,19 +37,19 @@ struct Token {
     /** @brief The string value of this token
      * 
      */
-    std::string value = "";
+    std::string val = "";
 
     /** @brief the specific type of this token
      * 
      */
-    TokenType type = token_flag_none;
+    TokenType type = token_none;
     
     /** @brief Returns true if `*this` is a valid token.
      * A token is a valid token if `this->type & token_flag_any` is true and if `!this->value.empty()`.
      */
     bool valid();
 
-    /** @brief Returns the length of `*this`.
+    /** @brief Returns the length of `this->value.length()`.
      * 
      */
     std::size_t len();
@@ -61,7 +60,14 @@ struct Token {
     bool operator==(const Token& other) const = default; 
 };
 
-std::string token_type_to_string(TokenType token_type);
+/** @brief Returns a string representation of the given token
+ * Returns `"none"` if `!(type & token_any)`
+ */
+std::string token_type_to_string(TokenType type);
+
+/** @brief Tokenizes the given source code 
+ * Converts `src`, the content of a .brose script to a list of tokens.
+ */
 std::vector<Token> tokenize_source(const std::string& src); 
 
 }; // namespace brose

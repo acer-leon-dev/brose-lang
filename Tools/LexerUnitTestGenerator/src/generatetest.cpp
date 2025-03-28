@@ -9,7 +9,7 @@ std::string generate_brose_script()
 
 std::string token_to_string(const brose::Token& token)
 {
-    return "{" + brose::Token::token_type_to_string(token.type)  + ", " + token.value + "}";
+    return "{" + brose::Token::token_type_to_string(token.type)  + ", " + token.val + "}";
 }
 
 std::string tokenize_script_and_format_tokens(const std::string& source)

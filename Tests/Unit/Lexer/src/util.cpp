@@ -31,7 +31,7 @@ std::string decontrol(std::string str) {
 }
     
 std::string token_to_string(const brose::Token& token) {
-    return "{" + token.value + ", " + brose::token_type_to_string(token.type) + "}";
+    return "{" + token.val + ", " + brose::token_type_to_string(token.type) + "}";
 }
 
 std::string tokenlist_to_string(const TokenList& vector) {
@@ -41,10 +41,10 @@ std::string tokenlist_to_string(const TokenList& vector) {
     
     std::string str;
     for (int i = 0; i < vector.size() - 1; i++) {
-        str += decontrol(vector.at(i).value) + " ";
+        str += decontrol(vector.at(i).val) + " ";
     }
 
-    return str + decontrol(vector.back().value);
+    return str + decontrol(vector.back().val);
 }
 
 void assertTokenListsAreEqual(const TokenList& actual_output, const TokenList& expected_output) {

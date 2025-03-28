@@ -42,7 +42,7 @@ TokenType operator_string_to_token_type(const std::string& str) {
     };
 
     auto it = keywords.find(str);
-    return (it == keywords.end()) ? token_flag_none : it->second;
+    return (it == keywords.end()) ? token_none : it->second;
 }
 
 using string_const_iterator = std::string::const_iterator;
@@ -189,7 +189,7 @@ std::vector<Token> Lexer::Tokenize() {
         else if (opt_token = m_HandleVariable(i)) {}
         else if (opt_token = m_HandleNumber(i)) {}
         else {
-            std::cerr << std::format("Error: Invalid token \"{}\"\n", opt_token->value);
+            std::cerr << std::format("Error: Invalid token \"{}\"\n", opt_token->val);
         }
 
         i += opt_token->len();
@@ -207,17 +207,17 @@ std::vector<Token> Lexer::Tokenize() {
 namespace brose {
 
 bool Token::valid() {
-    return type & token_flag_any && !value.empty();
+    return type & token_any && !val.empty();
 }
 
 std::size_t Token::len() {
-    return value.length();
+    return val.length();
 }
 
 std::string token_type_to_string(TokenType token_type) {
     switch (token_type) {
     default:                return "none";
-    case token_flag_any:    return "any";
+    case token_any:    return "any";
     case token_eol:         return "end_of_line";
     case token_variable:    return "variable";
     case token_number:      return "number";
