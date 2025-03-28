@@ -1,0 +1,24 @@
+The Brose Compiler stringizes a file with the ".brose" extension , FILE,
+tokenizes each value in FILE to a struct representing its token type and its string value,
+parses the tokens into an abstract syntax tree (AST),
+generates a compile-time and run-time symbol table of variables using the AST,
+then uses codegen to convert the AST into a machine code-like sequence of instructions
+
+The tokens should be split into several types:
+    An invalid/nonexistent token,
+    A number literal,
+    A newline statement terminator
+    A variable,
+    One for each unary and binary operation,
+    One for functions
+
+The result of tokenization should be an array of token objects, with each containing a token type and a string value
+
+The parser should iterate through each token in the token array, and generate an AST node for each corresponding sequence
+    of tokens
+The nodes should be defined by several kinds:
+    Expressions,
+        
+    Assignment
+    
+The Brose Virtual Machine

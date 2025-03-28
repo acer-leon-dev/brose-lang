@@ -1,0 +1,40 @@
+Representing if statements and piecewise functions in Brose
+
+## 'If, then' expression
+'if, then' statement
+
+```
+if x > 0, then e^x
+```
+
+## Piece-wise Expression
+According to Wikipedia,
+> "In mathematics, a piecewise function is a function whose domain is partitioned into several intervals ("subdomains") on which the function may be defined differently."
+<br>
+
+In Brose, piecewise expression work nearly identically. That is, the conditions may define any syntactically correct condition (e.g., x > 0, -6 > 1, a < x < b, etc), and it may return any value so long as at least one of the conditions evaluates to true *true*.<br>
+
+If all conditions are *false*, the piecewise expression is evaluated to undefined to *undefined*. If all conditions are *true*, the value of the first condition which is evaluated to *true* is the value of the piecewise expression.
+
+In Brose, a piecewise function can be written either one of two ways. Consider this mathematical notation for a piecewise function:
+
+```
+f(x) = { x < 0, 1
+       { x >= 0, x + 1
+```
+The function can be mimicked in brose syntax either like this:
+
+```
+y = {   x < 0,  1
+        x >= 0, x + 1   }
+```
+or like this:
+```
+y = { x < 0, 1 : x >= 0, x + 1 }
+```
+The latter is is similar to Python's ternary operator:
+```py
+a = 16 if cond1 else 32 if con2 else 64
+```
+In both syntaxes, the condition-value pair contains a conditional expession and a value expresssion, separated by a comma.
+In the second syntax, a colon is used to delimit each pair. However, both expressions evaluate to the same value.
