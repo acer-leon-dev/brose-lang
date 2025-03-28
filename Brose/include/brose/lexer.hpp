@@ -35,14 +35,33 @@ enum TokenType : int {
 };
 
 struct Token {
+    /** @brief The string value of this token
+     * 
+     */
     std::string value = "";
+
+    /** @brief the specific type of this token
+     * 
+     */
     TokenType type = token_flag_none;
     
+    /** @brief Returns true if `*this` is a valid token.
+     * A token is a valid token if `this->type & token_flag_any` is true and if `!this->value.empty()`.
+     */
     bool valid();
+
+    /** @brief Returns the length of `*this`.
+     * 
+     */
+    std::size_t len();
+
+    /** @brief Enables equality comparisons between tokens.
+     * 
+     */
     bool operator==(const Token& other) const = default; 
 };
 
 std::string token_type_to_string(TokenType token_type);
-std::vector<Token> lex(const std::string& src); 
+std::vector<Token> tokenize_source(const std::string& src); 
 
 }; // namespace brose

@@ -69,7 +69,7 @@ void testLexerProducesCorrectTokenSequenceFromScript1() {
         {"b",     token_variable}
     };
 
-    assertTokenListsAreEqual(brose::lex(script), expected);
+    assertTokenListsAreEqual(brose::tokenize_source(script), expected);
 }
 
 
@@ -123,7 +123,7 @@ void testLexerProducesCorrectTokenSequenceFromScript2() {
         {"c",       token_variable}
     };
 
-    assertTokenListsAreEqual(brose::lex(script), expected);
+    assertTokenListsAreEqual(brose::tokenize_source(script), expected);
 }
 
 
@@ -177,7 +177,7 @@ void testLexerProducesCorrectTokenSequenceFromScript3() {
         {"b",       token_variable}
     };
 
-    assertTokenListsAreEqual(brose::lex(script), expected);
+    assertTokenListsAreEqual(brose::tokenize_source(script), expected);
 }
 
 };

@@ -2,7 +2,6 @@
 
 // Boost
 #include <boost/regex.hpp>
-#include <boost/algorithm/string/join.hpp>
 
 // stdlib
 #include <algorithm>
