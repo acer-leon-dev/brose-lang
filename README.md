@@ -1,4 +1,4 @@
-# brose
+# Brose
 
 #### *Blue Rose*
 
