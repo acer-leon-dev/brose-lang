@@ -24,17 +24,17 @@ expr_node_uptr parse_variable_expr  (token_it_ref it);
 int get_binop_precedence(const Token& token) {
     static const std::unordered_map<TokenType, int>
     binary_operator_precedence_map = {
-        { token_exponent, 10 }, // E 
-        { token_multiply, 20 }, // M
-        { token_divide,   20 }, // D
-        { token_modulus,  20 },
-        { token_plus,     30 }, // A
-        { token_minus,    30 }, // S
+        { token_operator_exponent, 10 }, // E 
+        { token_operator_multiply, 20 }, // M
+        { token_operator_divide,   20 }, // D
+        { token_operator_modulus,  20 },
+        { token_operator_plus,     30 }, // A
+        { token_operator_minus,    30 }, // S
     };
 
-    static int token_flag_any_operator   = token_open_paren | token_close_paren | token_assign | token_plus 
-                            | token_minus | token_multiply | token_divide | token_exponent 
-                            | token_modulus | token_absolute | token_factorial;
+    static int token_flag_any_operator   = token_operator_open_paren | token_operator_close_paren | token_operator_assign | token_operator_plus 
+                            | token_operator_minus | token_operator_multiply | token_operator_divide | token_operator_exponent 
+                            | token_operator_modulus | token_operator_absolute | token_operator_factorial;
                             
     if (token.type & token_flag_any_operator) {
         return binary_operator_precedence_map.at(token.type);
@@ -103,7 +103,7 @@ expr_node_uptr parse_paren_expr(token_it_ref it) {
         return nullptr;
     }
 
-    if (it->type != token_close_paren) {
+    if (it->type != token_operator_close_paren) {
         return log_error("expected ')'");
     }
 
@@ -122,7 +122,7 @@ expr_node_uptr parse_function_expr(token_it_ref it) {
     // static int token_flag_binary_function = token_logarithmic_function;
     auto node = std::make_unique<FunctionCallExprNode>("", std::vector<expr_node_uptr>());
 
-    if (it->type & token_logarithmic_function) {
+    if (it->type & token_function_logarithmic) {
         // Set identifier to generic name
         node->name = "log";
         
@@ -142,7 +142,7 @@ expr_node_uptr parse_function_expr(token_it_ref it) {
     }
     
     // Check for closing parenthesis
-    if (it->type != token_close_paren) {
+    if (it->type != token_operator_close_paren) {
         return log_error("Expected \')\'");
     }
     
@@ -154,11 +154,11 @@ expr_node_uptr parse_function_expr(token_it_ref it) {
 expr_node_uptr parse_primary(token_it_ref it) {
     switch (it->type) {
     case token_variable:    return parse_variable_expr(it);
-    case token_number:  return parse_number_expr(it);
-    case token_open_paren:  return parse_paren_expr(it);
+    case token_literal_number:  return parse_number_expr(it);
+    case token_operator_open_paren:  return parse_paren_expr(it);
     }
 
-    int token_function = token_normal_function | token_logarithmic_function | token_trigonometric_function;
+    int token_function = token_function_normal | token_function_logarithmic | token_function_trigonometric;
     if (it->type & token_function) {
         return parse_function_expr(it);
     }

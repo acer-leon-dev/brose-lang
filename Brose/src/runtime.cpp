@@ -1,67 +1,77 @@
 #include "pch.hpp"
 #include <brose/codegen.hpp>
 
-using symbol_table = std::unordered_map<int, double>;
+using data_segment = std::unordered_map<int, double>;
 using register_file = std::array<double, 2>;
 
 namespace brose {
     
 class VirtualMachine {
 public:
+    std::optional<double> endvalue;
+    
     enum reg {
         r0 = 0,
         r1 = 1,
     };
+
+    data_segment data;
+    register_file file;
     
-    symbol_table vartable;
-    register_file regfile;
-    std::optional<double> endvalue;
-    
-    void Initialize();
-    void FeedScript(VMInstructions);
-    void Execute();
+    void initialize();
+    void feedScript(VMInstructions);
+    void execute();
     double RetrieveValue();
 private:
-    void Move_Reg_Reg(reg ra, reg rb);
-    void Move_Reg_Literal(reg r, double lit);
-    void Move_Reg_Address(reg r, int ad);
-    void Move_Address_Reg();
+    // Reg = register
+    // Lit = literal
+    // Add = address
+    void moveRegFromReg(reg ra, reg rb);
+    void moveRegFromMem(reg r, size_t addr);
+    void moveRegFromLit(reg r, double val);
+
+    void moveMemFromLit(size_t addr, double val);
+    void moveMemFromReg(size_t addr, reg r);
 };
-    
-void VirtualMachine::Move_Reg_Reg(reg ra, reg rb) {
-    regfile[ra] = regfile[rb];    
-}
 
-void VirtualMachine::Move_Reg_Literal(reg r, double lit) {
-    regfile[r] = lit;
-}
-
-void VirtualMachine::Move_Reg_Address(reg r, int ad) {
-    regfile[r] = vartable[ad];
-}
-
-void VirtualMachine::Move_Address_Reg() {
-    // assign some value source to a variable
-}
-
-void VirtualMachine::Initialize() {
+void VirtualMachine::initialize() {
     // allocate the variables and run the instructions
 }
 
-void VirtualMachine::FeedScript(VMInstructions) {
+void VirtualMachine::feedScript(VMInstructions) {
 
 }
 
-void VirtualMachine::Execute() {
+void VirtualMachine::execute() {
     // run the instructions array
 }
 
 double VirtualMachine::RetrieveValue() {
     if (!endvalue) {
-        throw std::runtime_error("Error: Must initialize and execute the vm before getting value.")
+        throw std::runtime_error("Error: Must initialize and execute the vm before getting value.");
     } else {
-        return *end_value;
+        return *endvalue;
     }
+}
+
+void VirtualMachine::moveRegFromReg(reg ra, reg rb) {
+    
+}
+
+void VirtualMachine::moveRegFromMem(reg r, size_t ad) {
+    
+}
+
+void VirtualMachine::moveRegFromLit(reg r, double val) {
+    
+}
+
+void VirtualMachine::moveMemFromLit(size_t addr, double val) {
+    
+}
+
+void VirtualMachine::moveMemFromReg(size_t addr, reg r) {
+    
 }
 
 };

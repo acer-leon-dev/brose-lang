@@ -28,17 +28,17 @@ private:
 TokenType operator_string_to_token_type(const std::string& str) {
     static const std::unordered_map<std::string, TokenType> keywords { 
         { "\n",  token_eol },
-        { "(",   token_open_paren },
-        { ")",   token_close_paren },
-        { "|",   token_absolute, },
-        { "=",   token_assign },
-        { "+",   token_plus },
-        { "-",   token_minus },
-        { "*",   token_multiply },
-        { "/",   token_divide },
-        { "^",   token_exponent },
-        { "!",   token_factorial },
-        { "mod", token_modulus }
+        { "(",   token_operator_open_paren },
+        { ")",   token_operator_close_paren },
+        { "|",   token_operator_absolute, },
+        { "=",   token_operator_assign },
+        { "+",   token_operator_plus },
+        { "-",   token_operator_minus },
+        { "*",   token_operator_multiply },
+        { "/",   token_operator_divide },
+        { "^",   token_operator_exponent },
+        { "!",   token_operator_factorial },
+        { "mod", token_operator_modulus }
     };
 
     auto it = keywords.find(str);
@@ -106,17 +106,17 @@ optional_token Lexer::m_HandleNewline(std::size_t begin, std::size_t end) {
 
 optional_token Lexer::m_HandleOperator(std::size_t begin, std::size_t end) {
     static const std::vector<TokenInfo> list{
-        { R"(\()", token_open_paren },
-        { R"(\))", token_close_paren },
-        { R"(\|)", token_absolute },
-        { R"(=)", token_assign },
-        { R"(\+)", token_plus },
-        { R"(\-)", token_minus },
-        { R"(\*)", token_multiply },
-        { R"(\/)", token_divide },
-        { R"(\^)", token_exponent },
-        { R"(\!)", token_factorial },
-        { R"(mod)", token_modulus }
+        { R"(\()", token_operator_open_paren },
+        { R"(\))", token_operator_close_paren },
+        { R"(\|)", token_operator_absolute },
+        { R"(=)", token_operator_assign },
+        { R"(\+)", token_operator_plus },
+        { R"(\-)", token_operator_minus },
+        { R"(\*)", token_operator_multiply },
+        { R"(\/)", token_operator_divide },
+        { R"(\^)", token_operator_exponent },
+        { R"(\!)", token_operator_factorial },
+        { R"(mod)", token_operator_modulus }
     };
 
     for (const TokenInfo& obj: list) {
@@ -130,7 +130,7 @@ optional_token Lexer::m_HandleOperator(std::size_t begin, std::size_t end) {
 }
 
 optional_token Lexer::m_HandleNormalFunction(std::size_t begin, std::size_t end) {
-    static const TokenInfo token_info_obj { R"(sin|cos|tan|ln|floor|ceil|)", token_normal_function };
+    static const TokenInfo token_info_obj { R"(sin|cos|tan|ln|floor|ceil|)", token_function_normal };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end()); 
     if (opt_value) {
         return std::make_optional<Token>(*opt_value, token_info_obj.type());
@@ -140,7 +140,7 @@ optional_token Lexer::m_HandleNormalFunction(std::size_t begin, std::size_t end)
 }
 
 optional_token Lexer::m_HandleLogarithmicFunction(std::size_t begin, std::size_t end) {
-    static const TokenInfo token_info_obj { R"((log\d*\.?\d*))", token_logarithmic_function };
+    static const TokenInfo token_info_obj { R"((log\d*\.?\d*))", token_function_logarithmic };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end()); 
     if (opt_value) {
         return std::make_optional<Token>(*opt_value, token_info_obj.type());
@@ -160,7 +160,7 @@ optional_token Lexer::m_HandleVariable(std::size_t begin, std::size_t end) {
 }
 
 optional_token Lexer::m_HandleNumber(std::size_t begin, std::size_t end) {
-    static const TokenInfo token_info_obj { R"(\d*\.?\d+|\d+\.?\d*)", token_number };
+    static const TokenInfo token_info_obj { R"(\d*\.?\d+|\d+\.?\d*)", token_literal_number };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end());
     if (opt_value) {
         return std::make_optional<Token>(*opt_value, token_info_obj.type());
@@ -220,21 +220,21 @@ std::string token_type_to_string(TokenType token_type) {
     case token_any:    return "any";
     case token_eol:         return "end_of_line";
     case token_variable:    return "variable";
-    case token_number:      return "number";
-    case token_open_paren:  return "open_paren";
-    case token_close_paren: return "close_paren";
-    case token_assign:      return "assign";
-    case token_plus:        return "plus";
-    case token_minus:       return "minus";
-    case token_multiply:    return "multiply";
-    case token_divide:      return "divide";
-    case token_exponent:    return "exponent";
-    case token_modulus:     return "modulus";
-    case token_absolute:    return "absolute";
-    case token_factorial:   return "factorial";
-    case token_normal_function: return "normal_function";
-    case token_logarithmic_function: return "logarithmic_function";
-    case token_trigonometric_function: return "trigonometric_function";
+    case token_literal_number:      return "number";
+    case token_operator_open_paren:  return "open_paren";
+    case token_operator_close_paren: return "close_paren";
+    case token_operator_assign:      return "assign";
+    case token_operator_plus:        return "plus";
+    case token_operator_minus:       return "minus";
+    case token_operator_multiply:    return "multiply";
+    case token_operator_divide:      return "divide";
+    case token_operator_exponent:    return "exponent";
+    case token_operator_modulus:     return "modulus";
+    case token_operator_absolute:    return "absolute";
+    case token_operator_factorial:   return "factorial";
+    case token_function_normal: return "normal_function";
+    case token_function_logarithmic: return "logarithmic_function";
+    case token_function_trigonometric: return "trigonometric_function";
     }
 }
 

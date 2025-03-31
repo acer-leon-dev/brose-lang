@@ -9,28 +9,39 @@ enum TokenType : int {
     token_none                      = 0,
     token_eol                       = 1 <<  0,
     token_variable                  = 1 <<  1,
-    token_number                    = 1 <<  2,
-    token_open_paren                = 1 <<  3,
-    token_close_paren               = 1 <<  4,
-    token_assign                    = 1 <<  5,
-    token_plus                      = 1 <<  6,
-    token_minus                     = 1 <<  7,
-    token_multiply                  = 1 <<  8,
-    token_divide                    = 1 <<  9,
-    token_exponent                  = 1 << 10,
-    token_modulus                   = 1 << 11,
-    token_absolute                  = 1 << 12,
-    token_factorial                 = 1 << 13,
-    token_normal_function           = 1 << 14,
-    token_logarithmic_function      = 1 << 15,
-    token_trigonometric_function    = 1 << 16,
+    token_literal_number            = 1 <<  2,
+    token_operator_open_paren       = 1 <<  3,
+    token_operator_close_paren      = 1 <<  4,
+    token_operator_assign           = 1 <<  5,
+    token_operator_plus             = 1 <<  6,
+    token_operator_minus            = 1 <<  7,
+    token_operator_multiply         = 1 <<  8,
+    token_operator_divide           = 1 <<  9,
+    token_operator_exponent         = 1 << 10,
+    token_operator_modulus          = 1 << 11,
+    token_operator_absolute         = 1 << 12,
+    token_operator_factorial        = 1 << 13,
+    token_function_normal           = 1 << 14,
+    token_function_logarithmic      = 1 << 15,
+    token_function_trigonometric    = 1 << 16,
 
-    token_any       = token_eol | token_variable | token_number 
-                    | token_open_paren | token_close_paren | token_assign 
-                    | token_plus | token_minus | token_multiply 
-                    | token_divide | token_exponent | token_modulus 
-                    | token_absolute | token_factorial | token_normal_function 
-                    | token_logarithmic_function | token_trigonometric_function
+    token_any   = token_eol
+                | token_variable
+                | token_literal_number
+                | token_operator_open_paren
+                | token_operator_close_paren
+                | token_operator_assign
+                | token_operator_plus
+                | token_operator_minus
+                | token_operator_multiply
+                | token_operator_divide
+                | token_operator_exponent
+                | token_operator_modulus
+                | token_operator_absolute
+                | token_operator_factorial
+                | token_function_normal
+                | token_function_logarithmic
+                | token_function_trigonometric
 };
 
 struct Token {
