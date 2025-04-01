@@ -1,0 +1,22 @@
+MOV      mov <reg> <reg>            Moves a value from a register into a register
+MOV      mov <reg> <con>            Moves a value from an immediate into a register
+MOV      mov <reg> <mem>            Moves a value from memory into a register
+MOV      mov <mem> <reg>            Moves a value from a register into memory
+MOV      mov <mem> <con>            Moves a value from an immediate into memory
+
+ADD      add <reg> <reg>            Add
+SUB      sub <reg> <reg>            Subtract
+MUL      mul <reg> <reg>            Multiply
+NEG      neg <reg> <reg>            Negation
+DIV      div <reg> <reg>            Divide
+MOD      mod <reg> <reg>            Modulus
+EXP      exp <reg> <reg> <reg>      Exponent
+ABS      abs <reg> <reg>            Absolute value
+FAC      fac <reg> <reg>            Factorial
+SIN      sin <reg> <reg>            Sine
+COS      cos <reg> <reg>            Cosine
+TAN      tan <reg> <reg>            Tangent
+LOG      log <reg> <reg> <reg>      Logarithm of base
+LN       ln <reg> <reg>             Natural Log
+FLOOR    floor <reg> <reg>          Floor
+CEIL     ceil <reg> <reg>           Ceil

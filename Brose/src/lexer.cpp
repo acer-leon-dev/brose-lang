@@ -75,16 +75,16 @@ public:
     std::vector<Token> Tokenize();
 private:
     std::string m_source;
-    optional_token m_HandleComment(std::size_t begin, std::size_t end = std::string::npos);
-    optional_token m_HandleNewline(std::size_t begin, std::size_t end = std::string::npos);
-    optional_token m_HandleOperator(std::size_t begin, std::size_t end = std::string::npos);
-    optional_token m_HandleNormalFunction(std::size_t begin, std::size_t end = std::string::npos);
-    optional_token m_HandleLogarithmicFunction(std::size_t begin, std::size_t end = std::string::npos);
-    optional_token m_HandleVariable(std::size_t begin, std::size_t end = std::string::npos);
-    optional_token m_HandleNumber(std::size_t begin, std::size_t end = std::string::npos);
+    optional_token m_handle_comment(std::size_t begin, std::size_t end = std::string::npos);
+    optional_token m_handle_newline(std::size_t begin, std::size_t end = std::string::npos);
+    optional_token m_handle_operator(std::size_t begin, std::size_t end = std::string::npos);
+    optional_token m_handle_normalfunction(std::size_t begin, std::size_t end = std::string::npos);
+    optional_token m_handle_logarithmicfunction(std::size_t begin, std::size_t end = std::string::npos);
+    optional_token m_handle_variable(std::size_t begin, std::size_t end = std::string::npos);
+    optional_token m_handle_number(std::size_t begin, std::size_t end = std::string::npos);
 };
 
-optional_token Lexer::m_HandleComment(std::size_t begin, std::size_t end) {
+optional_token Lexer::m_handle_comment(std::size_t begin, std::size_t end) {
     static const TokenInfo token_info_obj { R"((\/\/[^\n\r]*\n))", token_none };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end());
     if (opt_value) {
@@ -94,7 +94,7 @@ optional_token Lexer::m_HandleComment(std::size_t begin, std::size_t end) {
     return {};
 }
 
-optional_token Lexer::m_HandleNewline(std::size_t begin, std::size_t end) {
+optional_token Lexer::m_handle_newline(std::size_t begin, std::size_t end) {
     static const TokenInfo token_info_obj { R"(\n)", token_eol };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end());
     if (opt_value) {
@@ -104,7 +104,7 @@ optional_token Lexer::m_HandleNewline(std::size_t begin, std::size_t end) {
     return {};
 }
 
-optional_token Lexer::m_HandleOperator(std::size_t begin, std::size_t end) {
+optional_token Lexer::m_handle_operator(std::size_t begin, std::size_t end) {
     static const std::vector<TokenInfo> list{
         { R"(\()", token_operator_open_paren },
         { R"(\))", token_operator_close_paren },
@@ -129,7 +129,7 @@ optional_token Lexer::m_HandleOperator(std::size_t begin, std::size_t end) {
     return {};
 }
 
-optional_token Lexer::m_HandleNormalFunction(std::size_t begin, std::size_t end) {
+optional_token Lexer::m_handle_normalfunction(std::size_t begin, std::size_t end) {
     static const TokenInfo token_info_obj { R"(sin|cos|tan|ln|floor|ceil|)", token_function_normal };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end()); 
     if (opt_value) {
@@ -139,7 +139,7 @@ optional_token Lexer::m_HandleNormalFunction(std::size_t begin, std::size_t end)
     return {};
 }
 
-optional_token Lexer::m_HandleLogarithmicFunction(std::size_t begin, std::size_t end) {
+optional_token Lexer::m_handle_logarithmicfunction(std::size_t begin, std::size_t end) {
     static const TokenInfo token_info_obj { R"((log\d*\.?\d*))", token_function_logarithmic };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end()); 
     if (opt_value) {
@@ -149,7 +149,7 @@ optional_token Lexer::m_HandleLogarithmicFunction(std::size_t begin, std::size_t
     return {};
 }
 
-optional_token Lexer::m_HandleVariable(std::size_t begin, std::size_t end) {
+optional_token Lexer::m_handle_variable(std::size_t begin, std::size_t end) {
     static const TokenInfo token_info_obj { R"(([[:alpha:]](_\d)?)|)", token_variable };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end());
     if (opt_value) {
@@ -159,7 +159,7 @@ optional_token Lexer::m_HandleVariable(std::size_t begin, std::size_t end) {
     return {};
 }
 
-optional_token Lexer::m_HandleNumber(std::size_t begin, std::size_t end) {
+optional_token Lexer::m_handle_number(std::size_t begin, std::size_t end) {
     static const TokenInfo token_info_obj { R"(\d*\.?\d+|\d+\.?\d*)", token_literal_number };
     auto opt_value = match_regex_continuously_if_not_empty(token_info_obj.regex(), m_source.begin() + begin, m_source.end());
     if (opt_value) {
@@ -181,13 +181,13 @@ std::vector<Token> Lexer::Tokenize() {
         }
 
         optional_token opt_token;
-        if      (opt_token = m_HandleComment(i)) {}
-        else if (opt_token = m_HandleNewline(i)) {}
-        else if (opt_token = m_HandleOperator(i)) {}
-        else if (opt_token = m_HandleNormalFunction(i)) {}
-        else if (opt_token = m_HandleLogarithmicFunction(i)) {}
-        else if (opt_token = m_HandleVariable(i)) {}
-        else if (opt_token = m_HandleNumber(i)) {}
+        if      (opt_token = m_handle_comment(i)) {}
+        else if (opt_token = m_handle_newline(i)) {}
+        else if (opt_token = m_handle_operator(i)) {}
+        else if (opt_token = m_handle_normalfunction(i)) {}
+        else if (opt_token = m_handle_logarithmicfunction(i)) {}
+        else if (opt_token = m_handle_variable(i)) {}
+        else if (opt_token = m_handle_number(i)) {}
         else {
             std::cerr << std::format("Error: Invalid token \"{}\"\n", opt_token->val);
         }

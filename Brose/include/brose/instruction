@@ -1,0 +1,29 @@
+#include <span>
+#include <variant>
+
+using instruction_args = std::span<std::variant<size_t, double>>;
+
+namespace instructions {
+    void move_reg_to_reg(instruction_args);
+    void move_con_to_reg(instruction_args);
+    void move_mem_to_reg(instruction_args); 
+    void move_reg_to_mem(instruction_args);
+    void move_con_to_mem(instruction_args);
+        
+    void add_reg_to_reg(instruction_args);
+    void sub_reg_to_reg(instruction_args);
+    void mul_reg_to_reg(instruction_args);
+    void neg_reg_to_reg(instruction_args);
+    void div_reg_to_reg(instruction_args);
+    void mod_reg_to_reg(instruction_args);
+    void exp_reg_to_reg(instruction_args);
+    void abs_reg_to_reg(instruction_args);
+    void fac_reg_to_reg(instruction_args);
+    void sin_reg_to_reg(instruction_args);
+    void cos_reg_to_reg(instruction_args);
+    void tan_reg_to_reg(instruction_args);
+    void log_reg_to_reg(instruction_args);
+    void ln_reg_to_reg(instruction_args);
+    void floor_reg_to_reg(instruction_args);
+    void ceil_reg_to_reg(instruction_args);
+};
